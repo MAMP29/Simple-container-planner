@@ -24,6 +24,9 @@ class ContentArea(ft.UserControl):
             self.rows.pop()
             self.update()
 
+    def get_row_count(self):
+        return len(self.rows)
+
 
     def build(self):
         return ft.Container(
