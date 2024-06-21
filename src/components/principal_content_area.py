@@ -5,19 +5,26 @@ from components.button_row import ButtonRow
 class PrincipalContentArea(ft.UserControl):
     def __init__(self):
         super().__init__()
+        self.content_area = ContentArea()
 
+    def add_command(self, e):
+        self.content_area.add_row()
+        self.update()
+
+    def remove_command(self, e):
+        self.content_area.remove_row()
+        self.update()
 
     def build(self):
         return ft.Container(
             content=ft.Column(
                 [
-                    # Nombre y área de contenido en un contenedor
                     ft.Container(
                         content=ft.Column(
                             [
                                 ft.TextField(label='Nombre', width=350),
-                                ft.Container(height=10),  # Espacio entre nombre y contenido
-                                ContentArea(),
+                                ft.Container(height=10),
+                                self.content_area,
                             ],
                             tight=True
                         ),
@@ -25,10 +32,9 @@ class PrincipalContentArea(ft.UserControl):
                         border=ft.border.all(1, ft.colors.GREY_400),
                         border_radius=10,
                         width=900,
-                        height=200,
+                        height=400,
                     ),
-                    ft.Container(height=20),  # Espacio entre el contenedor y el botón de añadir
-                    # Botón de añadir y fila de botones en otro contenedor
+                    ft.Container(height=20),
                     ft.Container(
                         content=ft.Column(
                             [
@@ -40,19 +46,20 @@ class PrincipalContentArea(ft.UserControl):
                                             icon_size=20,
                                             tooltip="nuevo comando",
                                             bgcolor="blue",
+                                            on_click=self.add_command,
                                         ),
-
                                         ft.IconButton(
                                             icon=ft.icons.REMOVE,
                                             icon_color="black",
                                             icon_size=20,
                                             tooltip="quitar comando",
                                             bgcolor="red",
+                                            on_click=self.remove_command,
                                         ),
                                     ],
                                     alignment=ft.MainAxisAlignment.START,
                                 ),
-                                ft.Container(height=10),  # Espacio entre el botón de añadir y la fila de botones
+                                ft.Container(height=10),
                                 ButtonRow(),
                             ],
                             tight=True

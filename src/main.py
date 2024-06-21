@@ -12,22 +12,6 @@ def main(page: ft.Page):
     content = ContentArea()
     principal = PrincipalContentArea()
 
-    # containerButton = ft.Container(
-    #     ft.Row(
-    #         [
-    #             ft.IconButton(
-    #                 icon =  ft.icons.ADD,
-    #                 icon_color="black",
-    #                 icon_size=20,
-    #                 tooltip="nuevo comando",
-    #                 bgcolor="blue",
-    #             ),
-    #         ],
-    #         alignment=ft.MainAxisAlignment.CENTER,
-    #     ),
-    #     padding=20,
-    # )
-
     main_row = ft.Row(
         [
             sidebar,
