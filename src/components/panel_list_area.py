@@ -1,6 +1,5 @@
 import flet as ft
 
-
 class PanelListArea(ft.UserControl):
     def __init__(self):
         super().__init__()
@@ -21,21 +20,65 @@ class PanelListArea(ft.UserControl):
         return ft.Column([
             ft.Text("Panel de Registro", size=20, weight=ft.FontWeight.BOLD),
             self.expansion_list,
-            ft.ElevatedButton("Agregar Panel", on_click=self.add_panel)
+            ft.ElevatedButton("Agregar Panel", on_click=self.add_example_panel)
         ])
 
     def handle_change(self, e):
         print(f"Cambio en el panel con índice {e.data}")
 
-    def add_panel(self, e):
-        new_panel = ft.ExpansionPanel(
-            bgcolor=ft.colors.BLUE_400,
-            header=ft.Text(f"Panel {len(self.panels) + 1}"),
-            content=ft.Text(f"Contenido del panel {len(self.panels) + 1}")
-        )
+
+    def add_example_panel(self, e):
+        # Simulando datos de una ejecución
+        ejecucion_data = {
+            "id": len(self.panels) + 1,
+            "algoritmo": "FCFS",
+            "tiempo_total": "00:05:30",
+            "comandos": [
+                {"comando": "echo Hello", "tiempo_inicio": "00:00:00", "tiempo_fin": "00:00:01"},
+                {"comando": "ls -l", "tiempo_inicio": "00:00:02", "tiempo_fin": "00:00:03"},
+                {"comando": "sleep 5", "tiempo_inicio": "00:00:04", "tiempo_fin": "00:00:09"}
+            ]
+        }
+        new_panel = self.create_panel(ejecucion_data)
         self.panels.append(new_panel)
         self.expansion_list.controls = self.panels
         self.update()
+
+
+    def create_panel(self, data):
+        # Crear una tabla para los comandos
+        table = ft.DataTable(
+            columns=[
+                ft.DataColumn(ft.Text("Comando")),
+                ft.DataColumn(ft.Text("Tiempo Inicio")),
+                ft.DataColumn(ft.Text("Tiempo Fin")),
+            ],
+            rows=[
+                ft.DataRow(
+                    cells=[
+                        ft.DataCell(ft.Text(cmd["comando"])),
+                        ft.DataCell(ft.Text(cmd["tiempo_inicio"])),
+                        ft.DataCell(ft.Text(cmd["tiempo_fin"])),
+                    ],
+                ) for cmd in data["comandos"]
+            ],
+        )
+
+        content = ft.Row([
+                table,
+                ft.VerticalDivider(width=2),
+                ft.Column([
+                    ft.Text(f"Algoritmo: {data['algoritmo']}", weight=ft.FontWeight.BOLD),
+                    ft.Text(f"Tiempo total de ejecución: {data['tiempo_total']}"),
+                ])
+            ])
+            
+
+        return ft.ExpansionPanel(
+            bgcolor=ft.colors.BLUE_50,
+            header=ft.ListTile(title=ft.Text(f"Ejecución {data['id']}")),
+            content=content
+        )
 
     #create a header panel that always gonna appear in the top panel 
     def create_header_panel(self):
