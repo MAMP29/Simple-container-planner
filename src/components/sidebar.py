@@ -1,8 +1,10 @@
 import flet as ft
 
+
 class Sidebar(ft.UserControl):
-    def __init__(self):
+    def __init__(self, page):
         super().__init__()
+        self.page = page
 
     def build(self):
         return ft.Container(
@@ -10,8 +12,8 @@ class Sidebar(ft.UserControl):
                 [
                     ft.Text(value="Simple Container Planner", size=24, weight=ft.FontWeight.BOLD),
                     ft.Divider(height=2, color="black", thickness=3),
-                    ft.ElevatedButton(text="Ejecutar", width=200, on_click=self.execute_clicked),
-                    ft.ElevatedButton(text="Registrar", width=200, on_click=self.register_clicked),
+                    ft.ElevatedButton(text="Principal", width=200, on_click=lambda _: self.page.go("/")),
+                    ft.ElevatedButton(text="Registro", width=200, on_click=lambda _: self.page.go("/registro")),
                 ],
                 alignment=ft.MainAxisAlignment.START,
                 horizontal_alignment=ft.CrossAxisAlignment.CENTER,
