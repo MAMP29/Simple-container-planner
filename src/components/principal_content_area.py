@@ -6,8 +6,9 @@ class PrincipalContentArea(ft.UserControl):
     def __init__(self):
         super().__init__()
         self.content_area = ContentArea()
-        self.button_row = ButtonRow()
-        self.remove_button = ft.IconButton(
+        self.button_row = ButtonRow(self.content_area)
+        self.button_row.content_area = self.content_area
+        '''self.remove_button = ft.IconButton(
             icon=ft.icons.REMOVE,
             icon_color="black",
             icon_size=20,
@@ -15,9 +16,9 @@ class PrincipalContentArea(ft.UserControl):
             bgcolor="grey",
             on_click=self.remove_command,
             disabled=True,
-        )
+        )'''
 
-    def add_command(self, e):
+    '''def add_command(self, e):
         self.content_area.add_row()
         self.update_remove_button()
         self.update()
@@ -35,7 +36,7 @@ class PrincipalContentArea(ft.UserControl):
         else:
             self.remove_button.disabled = False
             self.remove_button.bgcolor = "red"
-            self.remove_button.tooltip = "Quitar comando"
+            self.remove_button.tooltip = "Quitar comando"'''
 
     
 
@@ -46,14 +47,7 @@ class PrincipalContentArea(ft.UserControl):
             content=ft.Column(
                 [
                     ft.Container(
-                        content=ft.Column(
-                            [
-                                ft.TextField(label='Nombre', width=350),
-                                ft.Container(height=10),
-                                self.content_area,
-                            ],
-                            tight=True
-                        ),
+                        content=self.content_area,
                         padding=10,
                         border=ft.border.all(1, ft.colors.GREY_400),
                         border_radius=10,
@@ -62,27 +56,7 @@ class PrincipalContentArea(ft.UserControl):
                     ),
                     ft.Container(height=20),
                     ft.Container(
-                        content=ft.Column(
-                            [
-                                ft.Row(
-                                    [
-                                        ft.IconButton(
-                                            icon=ft.icons.ADD,
-                                            icon_color="black",
-                                            icon_size=20,
-                                            tooltip="Nuevo comando",
-                                            bgcolor="blue",
-                                            on_click=self.add_command,
-                                        ),
-                                        self.remove_button,
-                                    ],
-                                    alignment=ft.MainAxisAlignment.START,
-                                ),
-                                ft.Container(height=10),
-                                self.button_row,
-                            ],
-                            tight=True
-                        ),
+                        content=self.button_row,
                         padding=10,
                         border=ft.border.all(1, ft.colors.GREY_400),
                         border_radius=10,

@@ -2,8 +2,13 @@ import flet as ft
 from components.principal_content_area import PrincipalContentArea
 from components.panel_list_area import PanelListArea
 from components.sidebar import Sidebar
+from components.docker_utils import *
+
+def inicializar_app():
+    create_image()
 
 def main(page: ft.Page):
+    inicializar_app()
     page.title = "Simple Container Planner"
     page.theme_mode = 'light'
 

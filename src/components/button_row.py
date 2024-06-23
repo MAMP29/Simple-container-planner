@@ -1,8 +1,10 @@
 import flet as ft
+from components.content_area import ContentArea
 
 class ButtonRow(ft.UserControl):
-    def __init__(self):
+    def __init__(self, content_area):
         super().__init__()
+        self.content_area = content_area
         self.dropdown = ft.Dropdown(
             label="Algoritmo",
             width=200,
@@ -15,20 +17,87 @@ class ButtonRow(ft.UserControl):
                 ft.dropdown.Option("Round Robin 2q"),
             ],
         )
+        self.execute_button = ft.ElevatedButton(text="Ejecutar", width=600, on_click=self.ejecutar_event)
 
-    def build(self):
-        return ft.Container(
-            content=ft.Row(
-                [
-                    ft.ElevatedButton(text="Ejecutar", width=600, on_click=self.ejecutar_event),
-                    # space between 
-                    ft.Container(width=20),  # Espacio entre el botón y el dropdown
-                    self.dropdown,
-                ],
-                alignment=ft.MainAxisAlignment.CENTER,
-            ),
-            padding=10,
+        self.add_button = ft.IconButton(
+            icon=ft.icons.ADD,
+            icon_color="black",
+            icon_size=20,
+            tooltip="Nuevo comando",
+            bgcolor="blue",
+            on_click=self.add_command,
         )
+
+        self.remove_button = ft.IconButton(
+            icon=ft.icons.REMOVE,
+            icon_color="black",
+            icon_size=20,
+            tooltip="Debe de haber al menos un comando",
+            bgcolor="grey",
+            on_click=self.remove_command,
+            disabled=True,
+        )
+
+    def add_command(self, e):
+        self.content_area.add_row()
+        self.update_remove_button()
+        self.update()
+
+    def remove_command(self, e):
+        self.content_area.remove_row()
+        self.update_remove_button()
+        self.update()
+
+    def update_remove_button(self):
+        if (self.content_area.get_row_count() <= 1):
+            self.remove_button.disabled = True
+            self.remove_button.bgcolor = "grey"
+            self.remove_button.tooltip = "Debe de haber al menos un comando"
+        else:
+            self.remove_button.disabled = False
+            self.remove_button.bgcolor = "red"
+            self.remove_button.tooltip = "Quitar comando"
+
+
+    # def build(self):
+    #     return ft.Container(
+    #         content=ft.Row(
+    #             [
+    #                 self.execute_button,
+    #                 # space between 
+    #                 ft.Container(width=20),  # Espacio entre el botón y el dropdown
+    #                 self.dropdown,
+    #             ],
+    #             alignment=ft.MainAxisAlignment.CENTER,
+    #         ),
+    #         padding=10,
+    #     )
+    
+    def build(self):
+        return ft.Column(
+            [
+                ft.Row(
+                    [
+                        self.add_button,
+                        self.remove_button,
+                    ],
+                    alignment=ft.MainAxisAlignment.START,
+                ),
+                ft.Container(height=10),
+                ft.Row(
+                    [
+                    self.execute_button,
+                    self.dropdown,
+                    ],
+                    alignment=ft.MainAxisAlignment.CENTER,
+                ),
+            ],
+            tight=True
+        )
+
     
     def ejecutar_event(self, e):
-        print(f"El algoritmo escogido es: {self.dropdown.value}")
+        print("ejecución")
+        print(self.content_area.get_data())
+
+
