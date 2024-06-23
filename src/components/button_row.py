@@ -1,5 +1,6 @@
 import flet as ft
 from components.content_area import ContentArea
+from components.docker_utils import execute_command
 
 class ButtonRow(ft.UserControl):
     def __init__(self, content_area):
@@ -58,13 +59,20 @@ class ButtonRow(ft.UserControl):
             self.remove_button.bgcolor = "red"
             self.remove_button.tooltip = "Quitar comando"
 
-    # execute the commands of the user 
+    # Execute the commands of the user 
     def execute_comands(self, e):
         data = self.content_area.get_data()
         algoritmo = self.dropdown.value
 
-        print(f"Ejecutando data con el algoritmo: {algoritmo}")
-        print(data)
+        # Execute each command and collect results
+        results = []
+        for command in data['commands']:
+            result = execute_command(command['command'])
+            results.append(result)
+
+    
+        for result in results:
+            print("resultado del comando", result)
 
 
     # def build(self):
