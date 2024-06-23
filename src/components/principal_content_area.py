@@ -6,6 +6,7 @@ class PrincipalContentArea(ft.UserControl):
     def __init__(self):
         super().__init__()
         self.content_area = ContentArea()
+        self.button_row = ButtonRow()
         self.remove_button = ft.IconButton(
             icon=ft.icons.REMOVE,
             icon_color="black",
@@ -78,7 +79,7 @@ class PrincipalContentArea(ft.UserControl):
                                     alignment=ft.MainAxisAlignment.START,
                                 ),
                                 ft.Container(height=10),
-                                ButtonRow(),
+                                self.button_row,
                             ],
                             tight=True
                         ),
