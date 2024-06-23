@@ -84,8 +84,13 @@ class PanelListArea(ft.UserControl):
     def create_header_panel(self):
         return ft.ExpansionPanel(
             bgcolor=ft.colors.BLUE_400,
-            header=ft.Text("Area de registros"),
-            content=ft.Text("Bievenido a al area de registro, aquí podras consultar los resultados de tus ejecuciónes")
+            header=ft.ListTile(title=ft.Text("Area de registro",color="white")),
+            content=ft.Column(
+                    [   
+                        ft.Text("Bievenido a al area de registro, aquí podras consultar los resultados de tus ejecuciónes", size=24, color="white")
+                    ],
+                    alignment=ft.MainAxisAlignment.CENTER,
+                )
             )
 
 
