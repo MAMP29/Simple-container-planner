@@ -17,7 +17,7 @@ class ButtonRow(ft.UserControl):
                 ft.dropdown.Option("Round Robin 2q"),
             ],
         )
-        self.execute_button = ft.ElevatedButton(text="Ejecutar", width=600, on_click=self.ejecutar_event)
+        self.execute_button = ft.ElevatedButton(text="Ejecutar", width=600, on_click=self.execute_comands)
 
         self.add_button = ft.IconButton(
             icon=ft.icons.ADD,
@@ -58,6 +58,14 @@ class ButtonRow(ft.UserControl):
             self.remove_button.bgcolor = "red"
             self.remove_button.tooltip = "Quitar comando"
 
+    # execute the commands of the user 
+    def execute_comands(self, e):
+        data = self.content_area.get_data()
+        algoritmo = self.dropdown.value
+
+        print(f"Ejecutando data con el algoritmo: {algoritmo}")
+        print(data)
+
 
     # def build(self):
     #     return ft.Container(
@@ -95,9 +103,6 @@ class ButtonRow(ft.UserControl):
             tight=True
         )
 
-    
-    def ejecutar_event(self, e):
-        print("ejecución")
-        print(self.content_area.get_data())
+
 
 
