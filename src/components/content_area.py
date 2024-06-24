@@ -5,6 +5,7 @@ class ContentArea(ft.UserControl):
         super().__init__()
         self.name_field = ft.TextField(label='Nombre', width=350)
         self.rows = [self.create_row()]
+        self.rows_column = ft.Column(self.rows, scroll=ft.ScrollMode.AUTO, expand=True)
 
     def create_row(self):
         return ft.Row(
@@ -33,8 +34,8 @@ class ContentArea(ft.UserControl):
         for row in self.rows:
             row_data ={
                 'command': row.controls[0].value,
-                'start_time': int(row.controls[1].value),
-                'estimated_time': int(row.controls[2].value),
+                'start_time': int(row.controls[1].value) if row.controls[1].value else 0,
+                'estimated_time': int(row.controls[2].value) if row.controls[2].value else 0,
             }
             data['commands'].append(row_data)
         return data
@@ -45,7 +46,7 @@ class ContentArea(ft.UserControl):
         for row in self.rows:
             for control in row.controls:
                 control.value = ''
-                self.update()
+            self.update()
                 
 
     def get_row_count(self):
@@ -58,11 +59,12 @@ class ContentArea(ft.UserControl):
                 [
                     self.name_field,
                     ft.Container(height=10),
-                    ft.Column(self.rows, scroll=ft.ScrollMode.AUTO),
+                    self.rows_column
                 ],            
-                tight=True,
+                #tight=True,
+                expand=True,
             ),
-            height=250,
+            expand=True,
         )
     
     # def build(self):

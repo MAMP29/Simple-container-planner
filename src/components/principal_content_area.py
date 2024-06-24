@@ -53,6 +53,7 @@ class PrincipalContentArea(ft.UserControl):
                         border_radius=10,
                         width=900,
                         height=400,
+                        expand=True,
                     ),
                     ft.Container(height=20),
                     ft.Container(
