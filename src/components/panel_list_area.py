@@ -33,6 +33,8 @@ class PanelListArea(ft.UserControl):
             "id": len(self.panels) + 1,
             "algoritmo": "FCFS",
             "tiempo_total": "00:05:30",
+            "avg_turnaround_time": "00:00:50",
+            "avg_response_time": "00:00:30",
             "comandos": [
                 {"comando": "echo Hello", "tiempo_inicio": "00:00:00", "tiempo_fin": "00:00:01", "turnaround_time": "00:00:04", "response_time":"00:00:05"},
                 {"comando": "ls -l", "tiempo_inicio": "00:00:02", "tiempo_fin": "00:00:03","turnaround_time": "00:00:02", "response_time":"00:00:02"},
@@ -74,6 +76,8 @@ class PanelListArea(ft.UserControl):
                 ft.Column([
                     ft.Text(f"Algoritmo: {data['algoritmo']}", weight=ft.FontWeight.BOLD),
                     ft.Text(f"Tiempo total de ejecución: {data['tiempo_total']}"),
+                    ft.Text(f"Turnaround time promedio: {data['avg_turnaround_time']}"),
+                    ft.Text(f"Response time promedio: {data['avg_response_time']}")
                 ])
             ])
             
