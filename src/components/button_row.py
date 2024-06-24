@@ -1,6 +1,8 @@
 import flet as ft
 from components.content_area import ContentArea
 from components.docker_utils import execute_command
+from algorithms.fcfs import FCFS
+
 
 class ButtonRow(ft.UserControl):
     def __init__(self, content_area):
@@ -63,16 +65,22 @@ class ButtonRow(ft.UserControl):
     def execute_comands(self, e):
         data = self.content_area.get_data()
         algoritmo = self.dropdown.value
-
-        # Execute each command and collect results
+        print(data)
         results = []
-        for command in data['commands']:
-            result = execute_command(command['command'])
-            results.append(result)
+        avg_turnaround_time = 0
+        avg_response_time = 0
 
-    
-        for result in results:
-            print("resultado del comando", result)
+        if algoritmo == 'FCFS':
+            fcfs = FCFS(data['commands'])
+            results, avg_turnaround_time, avg_response_time = fcfs.run()
+
+            for result in results:
+                print(f"Resultado del comando: {result['result']}")
+                print(f"Turnaround time: {result['turnaround_time']}")
+                print(f"Response time: {result['response_time']}")
+        
+        print(f"Average Turnaround Time: {avg_turnaround_time}")
+        print(f"Average Response Time: {avg_response_time}")
 
 
     # def build(self):

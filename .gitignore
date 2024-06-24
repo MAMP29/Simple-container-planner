@@ -7,3 +7,5 @@ src/components/__pycache__/alert_banner.cpython-312.pyc
 src/components/alert_banner.py
 src/components/__pycache__/panel_list_area.cpython-312.pyc
 src/components/__pycache__/docker_utils.cpython-312.pyc
+src/algorithms/__pycache__/__init__.cpython-312.pyc
+src/algorithms/__pycache__/fcfs.cpython-312.pyc
