@@ -34,9 +34,9 @@ class PanelListArea(ft.UserControl):
             "algoritmo": "FCFS",
             "tiempo_total": "00:05:30",
             "comandos": [
-                {"comando": "echo Hello", "tiempo_inicio": "00:00:00", "tiempo_fin": "00:00:01"},
-                {"comando": "ls -l", "tiempo_inicio": "00:00:02", "tiempo_fin": "00:00:03"},
-                {"comando": "sleep 5", "tiempo_inicio": "00:00:04", "tiempo_fin": "00:00:09"}
+                {"comando": "echo Hello", "tiempo_inicio": "00:00:00", "tiempo_fin": "00:00:01", "turnaround_time": "00:00:04", "response_time":"00:00:05"},
+                {"comando": "ls -l", "tiempo_inicio": "00:00:02", "tiempo_fin": "00:00:03","turnaround_time": "00:00:02", "response_time":"00:00:02"},
+                {"comando": "sleep 5", "tiempo_inicio": "00:00:04", "tiempo_fin": "00:00:09","turnaround_time": "00:00:05", "response_time":"00:00:05"}
             ]
         }
         new_panel = self.create_panel(ejecucion_data)
@@ -52,6 +52,8 @@ class PanelListArea(ft.UserControl):
                 ft.DataColumn(ft.Text("Comando")),
                 ft.DataColumn(ft.Text("Tiempo Inicio")),
                 ft.DataColumn(ft.Text("Tiempo Fin")),
+                ft.DataColumn(ft.Text("Turnaround Time")),
+                ft.DataColumn(ft.Text("Response Time"))
             ],
             rows=[
                 ft.DataRow(
@@ -59,6 +61,8 @@ class PanelListArea(ft.UserControl):
                         ft.DataCell(ft.Text(cmd["comando"])),
                         ft.DataCell(ft.Text(cmd["tiempo_inicio"])),
                         ft.DataCell(ft.Text(cmd["tiempo_fin"])),
+                        ft.DataCell(ft.Text(cmd["turnaround_time"])),
+                        ft.DataCell(ft.Text(cmd["response_time"]))
                     ],
                 ) for cmd in data["comandos"]
             ],
