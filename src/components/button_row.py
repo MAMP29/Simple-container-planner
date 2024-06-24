@@ -81,6 +81,7 @@ class ButtonRow(ft.UserControl):
         
         print(f"Average Turnaround Time: {avg_turnaround_time}")
         print(f"Average Response Time: {avg_response_time}")
+        self.content_area.clear()
 
 
     # def build(self):

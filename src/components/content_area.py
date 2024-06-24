@@ -39,6 +39,14 @@ class ContentArea(ft.UserControl):
             data['commands'].append(row_data)
         return data
 
+    #delete text of the textfields in self.rows
+    def clear(self):
+        self.name_field.value = ''
+        for row in self.rows:
+            for control in row.controls:
+                control.value = ''
+                self.update()
+                
 
     def get_row_count(self):
         return len(self.rows)
