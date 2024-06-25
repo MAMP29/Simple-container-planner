@@ -1,13 +1,16 @@
+import time
 import flet as ft
+from dataCommand import execution_results
 from components.content_area import ContentArea
 from components.docker_utils import execute_command
 from algorithms.fcfs import FCFS
 
 
 class ButtonRow(ft.UserControl):
-    def __init__(self, content_area):
+    def __init__(self, content_area, panel_list_area):
         super().__init__()
         self.content_area = content_area
+        self.panel_list_area = panel_list_area
         self.dropdown = ft.Dropdown(
             label="Algoritmo",
             width=200,
@@ -63,6 +66,7 @@ class ButtonRow(ft.UserControl):
 
     # Execute the commands of the user 
     def execute_comands(self, e):
+        global execution_results
         data = self.content_area.get_data()
         algoritmo = self.dropdown.value
         print(data)
@@ -81,6 +85,30 @@ class ButtonRow(ft.UserControl):
         
         print(f"Average Turnaround Time: {avg_turnaround_time}")
         print(f"Average Response Time: {avg_response_time}")
+
+        #Create a dictionary of the execution data
+        execution_data = {
+            "nombre": data["name"],
+            "algoritmo": algoritmo,
+            "total_time": time.strftime("%H:%M:%S", time.gmtime(sum([r['turnaround_time'] for r in results]))),
+            "avg_turnaround_time": time.strftime("%H:%M:%S", time.gmtime(avg_turnaround_time)),
+            "avg_response_time": time.strftime("%H:%M:%S", time.gmtime(avg_response_time)),
+            "commands": results
+        }
+
+        print("-----------------Execution data:")
+        print(execution_data)
+
+        #add execution_data to the global list
+        execution_results.append(execution_data)
+        print(execution_results)
+
+        #update result panel
+        #new_panel = self.panel_list_area.create_panel(execution_data)
+        self.panel_list_area.add_panel(execution_data)
+        self.panel_list_area.update_panels()
+        
+        #update the panel list area
         self.content_area.clear()
 
 
