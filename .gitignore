@@ -13,3 +13,4 @@ src/__pycache__/dataCommand.cpython-312.pyc
 src/__pycache__/main.cpython-312.pyc
 src/__pycache__/execution_results.cpython-312.pyc
 src/__pycache__/data_manager.cpython-312.pyc
+src/algorithms/__pycache__/spn.cpython-312.pyc
