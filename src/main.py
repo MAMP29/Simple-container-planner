@@ -3,10 +3,14 @@ from components.principal_content_area import PrincipalContentArea
 from components.panel_list_area import PanelListArea
 from components.sidebar import Sidebar
 from components.docker_utils import *
-from dataCommand import execution_results
+from data_manager import db
+from execution_results import execution_results
 
 def inicializar_app():
     create_image()
+    db.connect()
+    db.load_results()
+    db.print_results()
 
 def main(page: ft.Page):
     global execution_results

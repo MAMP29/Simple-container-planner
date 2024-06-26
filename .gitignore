@@ -11,3 +11,5 @@ src/algorithms/__pycache__/__init__.cpython-312.pyc
 src/algorithms/__pycache__/fcfs.cpython-312.pyc
 src/__pycache__/dataCommand.cpython-312.pyc
 src/__pycache__/main.cpython-312.pyc
+src/__pycache__/execution_results.cpython-312.pyc
+src/__pycache__/data_manager.cpython-312.pyc

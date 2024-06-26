@@ -1,6 +1,7 @@
 import time
 import flet as ft
-from dataCommand import execution_results
+from data_manager import db
+from execution_results import execution_results
 from components.content_area import ContentArea
 from components.docker_utils import execute_command
 from algorithms.fcfs import FCFS
@@ -107,6 +108,9 @@ class ButtonRow(ft.UserControl):
         #new_panel = self.panel_list_area.create_panel(execution_data)
         self.panel_list_area.add_panel(execution_data)
         self.panel_list_area.update_panels()
+        
+        # Save execution_results in the database
+        db.save_results(execution_results)
         
         #update the panel list area
         self.content_area.clear()
