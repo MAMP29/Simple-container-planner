@@ -1,3 +1,5 @@
+import asyncio
+import aiodocker
 import docker 
 import io
 
@@ -40,27 +42,38 @@ def create_image():
             print(f"Error al crear la imagen {image_name}: {e}")
 
 # function to execute a command in the container
+async def execute_command_async(comando):
+    async with aiodocker.Docker() as docker:
+        config = {
+            "Image": "planner-base:latest",
+            "Cmd": ["sh", "-c", comando],
+            "AttachStdout": True,
+            "AttachStderr": True,
+        }
+        container = await docker.containers.create(config=config)
+        await container.start()
+        
+        start_time = asyncio.get_event_loop().time()
+        
+        logs = []
+        async for log in container.log(stdout=True, stderr=True, follow=True):
+            logs.append(log)
+        result = "".join(logs)
+        
+        await container.wait()
+        end_time = asyncio.get_event_loop().time()
+        
+        await container.delete(force=True)
+        
+        execution_time = end_time - start_time
+        return result, execution_time
+
 def execute_command(comando):
-    client = get_client()
-
-    if not client:
-        return "Error: no se pudo obtener el cliente de Docker"
-
-    try:
-        container = client.containers.run(
-            "planner-base:latest", 
-            command=["sh", "-c", comando],
-            detach=True
-        )
-        container.wait()
-        logs = container.logs().decode('utf-8')
-        container.remove()
-        return logs
-    except Exception as e:
-        print(f"Error al ejecutar el comando '{comando}' en el contenedor: {e}")
-        return f"Error al ejecutar el comando '{comando}'"
+    async def run():
+        return await execute_command_async(comando)
+    return asyncio.run(run())
 
 if __name__ == "__main__":
     create_image()
-    resultado = execute_command("ps -ef")
-    print("Resultado del comando: ", resultado)
+    resultado, tiempo = execute_command("ls -l")
+    print("Resultado del comando: ", resultado, " Tiempo: ", tiempo)

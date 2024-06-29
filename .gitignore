@@ -14,3 +14,6 @@ src/__pycache__/main.cpython-312.pyc
 src/__pycache__/execution_results.cpython-312.pyc
 src/__pycache__/data_manager.cpython-312.pyc
 src/algorithms/__pycache__/spn.cpython-312.pyc
+src/algorithms/__pycache__/hrrn.cpython-312.pyc
+src/algorithms/__pycache__/round_robin.cpython-312.pyc
+src/algorithms/__pycache__/srt.cpython-312.pyc

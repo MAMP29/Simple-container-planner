@@ -3,9 +3,12 @@ import flet as ft
 from data_manager import db
 from execution_results import execution_results
 from components.content_area import ContentArea
-from components.docker_utils import execute_command
+from utils.docker_utils import execute_command
 from algorithms.fcfs import FCFS
 from algorithms.spn import SPN
+from algorithms.srt import SRT
+from algorithms.hrrn import HRRN
+from algorithms.round_robin import RR2Q
 
 class ButtonRow(ft.UserControl):
     def __init__(self, content_area, panel_list_area):
@@ -93,6 +96,32 @@ class ButtonRow(ft.UserControl):
                 print(f"Turnaround time: {result['turnaround_time']}")
                 print(f"Response time: {result['response_time']}")
 
+        elif algoritmo == 'SRT':
+            srt = SRT(data['commands'])
+            results, avg_turnaround_time, avg_response_time = srt.run()
+
+            for result in results:
+                print(f"Resultado del comando: {result['result']}")
+                print(f"Turnaround time: {result['turnaround_time']}")
+                print(f"Response time: {result['response_time']}")
+
+        elif algoritmo == 'HRRN':
+            hrrn = HRRN(data['commands'])
+            results, avg_turnaround_time, avg_response_time = hrrn.run()
+
+            for result in results:
+                print(f"Resultado del comando: {result['result']}")
+                print(f"Turnaround time: {result['turnaround_time']}")
+                print(f"Response time: {result['response_time']}")
+
+        elif algoritmo == 'Round Robin 2q':
+            rr2q = RR2Q(data['commands'],2)
+            results, avg_turnaround_time, avg_response_time = rr2q.run()
+
+            for result in results:
+                print(f"Resultado del comando: {result['result']}")
+                print(f"Turnaround time: {result['turnaround_time']}")
+                print(f"Response time: {result['response_time']}")
 
         print(f"Average Turnaround Time: {avg_turnaround_time}")
         print(f"Average Response Time: {avg_response_time}")
