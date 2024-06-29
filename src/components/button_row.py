@@ -116,7 +116,7 @@ class ButtonRow(ft.UserControl):
 
         elif algoritmo == 'Round Robin 2q':
             rr2q = RR2Q(data['commands'],2)
-            results, avg_turnaround_time, avg_response_time = rr2q.run()
+            results, avg_turnaround_time, avg_response_time = rr2q.execute()
 
             for result in results:
                 print(f"Resultado del comando: {result['result']}")
@@ -128,6 +128,9 @@ class ButtonRow(ft.UserControl):
 
         #Create a dictionary of the execution data
         execution_data = {
+            "timestamp_id": data["timestamp_id"],
+            "hour_and_date": data["hour_and_date"],
+            "color": data["color"],
             "nombre": data["name"],
             "algoritmo": algoritmo,
             "total_time": time.strftime("%H:%M:%S", time.gmtime(sum([r['turnaround_time'] for r in results]))),
@@ -155,20 +158,6 @@ class ButtonRow(ft.UserControl):
         self.content_area.clear()
 
 
-    # def build(self):
-    #     return ft.Container(
-    #         content=ft.Row(
-    #             [
-    #                 self.execute_button,
-    #                 # space between 
-    #                 ft.Container(width=20),  # Espacio entre el botón y el dropdown
-    #                 self.dropdown,
-    #             ],
-    #             alignment=ft.MainAxisAlignment.CENTER,
-    #         ),
-    #         padding=10,
-    #     )
-    
     def build(self):
         return ft.Column(
             [

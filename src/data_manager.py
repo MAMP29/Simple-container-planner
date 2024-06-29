@@ -26,14 +26,6 @@ class Connection():
             print(f"Saved result {i}: {serialized_result}")
         print("Results saved successfully!")
         
-    # Load execution_results from the database
-    # def load_results(self):
-    #     print("Loading results...")
-    #     keys = self.connection.keys("result_*")
-    #     loaded_results = [json.loads(self.connection.get(key)) for key in keys]            
-    #     execution_results.clear()
-    #     execution_results.extend(loaded_results)
-    #     print("Results loaded successfully!")
 
     def load_results(self):
         global execution_results
@@ -62,6 +54,15 @@ class Connection():
             print(f"Result {i+1}: {result}")
         print("Results printed successfully!")
         
+    def delete_result_by_id(self, timestamp_id):
+        print("Deleting result with timestamp_id:", timestamp_id)
+        keys = self.connection.lrange("execution_results", 0, -1)
+        for i, key in enumerate(keys):
+            result = json.loads(key)
+            if result["timestamp_id"] == timestamp_id:
+                self.connection.lrem("execution_results", 1, key)
+                break
+        print("Result deleted successfully!")
 
 db = Connection()
 

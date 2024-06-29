@@ -2,7 +2,7 @@ import flet as ft
 from components.principal_content_area import PrincipalContentArea
 from components.panel_list_area import PanelListArea
 from components.sidebar import Sidebar
-from components.docker_utils import *
+from utils.docker_utils import *
 from data_manager import db
 from execution_results import execution_results
 

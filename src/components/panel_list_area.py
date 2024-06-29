@@ -1,4 +1,8 @@
 import flet as ft
+import random
+from flet import colors
+from data_manager import db
+
 
 class PanelListArea(ft.UserControl):
     def __init__(self, execution_results):
@@ -23,27 +27,7 @@ class PanelListArea(ft.UserControl):
 
     def handle_change(self, e):
         print(f"Cambio en el panel con índice {e.data}")
-
-
-    '''def add_example_panel(self, e):
-        # Simulando datos de una ejecución
-        ejecucion_data = {
-            "id": len(self.panels) + 1,
-            "algoritmo": "FCFS",
-            "tiempo_total": "00:05:30",
-            "avg_turnaround_time": "00:00:50",
-            "avg_response_time": "00:00:30",
-            "comandos": [
-                {"comando": "echo Hello", "tiempo_inicio": "00:00:00", "tiempo_fin": "00:00:01", "turnaround_time": "00:00:04", "response_time":"00:00:05"},
-                {"comando": "ls -l", "tiempo_inicio": "00:00:02", "tiempo_fin": "00:00:03","turnaround_time": "00:00:02", "response_time":"00:00:02"},
-                {"comando": "sleep 5", "tiempo_inicio": "00:00:04", "tiempo_fin": "00:00:09","turnaround_time": "00:00:05", "response_time":"00:00:05"}
-            ]
-        }
-        new_panel = self.create_panel(ejecucion_data)
-        self.panels.append(new_panel)
-        self.expansion_list.controls = self.panels
-        self.update()'''
-
+        
 
     def update_panels(self):
         # Limpiar los paneles actuales y agregar nuevamente
@@ -86,7 +70,8 @@ class PanelListArea(ft.UserControl):
                 ft.DataColumn(ft.Text("Tiempo Inicio")),
                 ft.DataColumn(ft.Text("Tiempo Estimado")),
                 ft.DataColumn(ft.Text("Turnaround Time")),
-                ft.DataColumn(ft.Text("Response Time"))
+                ft.DataColumn(ft.Text("Response Time")),
+                ft.DataColumn(ft.Text("Tiempo de ejecución"))
             ],
             rows=[
                 ft.DataRow(
@@ -95,29 +80,59 @@ class PanelListArea(ft.UserControl):
                         ft.DataCell(ft.Text(cmd["start_time"])),
                         ft.DataCell(ft.Text(cmd["estimated_time"])),
                         ft.DataCell(ft.Text(f"{cmd['turnaround_time']:.2f}")),
-                        ft.DataCell(ft.Text(f"{cmd['response_time']:.2f}"))
+                        ft.DataCell(ft.Text(f"{cmd['response_time']:.2f}")),
+                        ft.DataCell(ft.Text(f"{cmd['actual_execution_time']:.2f}"))
                     ],
                 ) for cmd in data["commands"]
             ],
         )
 
-        content = ft.Row([
-            table,
-            ft.VerticalDivider(width=2),
-            ft.Column([
-                ft.Text(f"Algoritmo: {data['algoritmo']}", weight=ft.FontWeight.BOLD),
-                ft.Text(f"Tiempo total de ejecución: {data['total_time']}"),
-                ft.Text(f"Turnaround time promedio: {data['avg_turnaround_time']}"),
-                ft.Text(f"Response time promedio: {data['avg_response_time']}"),
-                # ElevatedButton("Exportar a JSON", on_click=lambda e: self.export_to_json(data)),
-                # ElevatedButton("Exportar a CSV", on_click=lambda e: self.export_to_csv(data)),
-            ])
+        listTitle = ft.ListTile(
+            title=ft.Text(f"Panel: {data['timestamp_id']}"),
+            subtitle=ft.Text(f"Fecha de creación: {data['hour_and_date']}"),
+            # trailing=ft.IconButton(
+            #     ft.icons.DELETE, 
+            #     on_click=lambda e, panel_id=data["timestamp_id"]: self.handle_delete(e, panel_id), 
+            #     icon_color=ft.colors.BLACK
+            # )
+        )
+
+        content = ft.Column([
+            ft.Row([
+                table,
+                ft.VerticalDivider(width=2),
+                ft.Column([
+                    ft.Text(f"Algoritmo: {data['algoritmo']}", weight=ft.FontWeight.BOLD),
+                    ft.Text(f"Tiempo total de ejecución: {data['total_time']}"),
+                    ft.Text(f"Turnaround time promedio: {data['avg_turnaround_time']}"),
+                    ft.Text(f"Response time promedio: {data['avg_response_time']}"),
+                    # ElevatedButton("Exportar a JSON", on_click=lambda e: self.export_to_json(data)),
+                    # ElevatedButton("Exportar a CSV", on_click=lambda e: self.export_to_csv(data)),
+                ]),
+            ]),
+            ft.Row([
+                ft.Container(
+                    content=listTitle,
+                    expand=True
+                ),
+                ft.IconButton(
+                    ft.icons.DELETE, 
+                    on_click=lambda e, panel_id=data["timestamp_id"]: self.handle_delete(e, panel_id), 
+                    icon_color=ft.colors.BLACK
+                ),
+                ft.IconButton(
+                    ft.icons.AUTORENEW,
+                    icon_color=ft.colors.BLACK,
+                )
+            ], 
+            alignment=ft.MainAxisAlignment.SPACE_BETWEEN)
         ])
 
         return ft.ExpansionPanel(
-            bgcolor=ft.colors.BLUE_50,
+            bgcolor=data["color"],
             header=ft.ListTile(title=ft.Text(f"Ejecución {data['nombre']}")),
-            content=content
+            content=content,
+            data=data["timestamp_id"]
         )
 
     #create a header panel that always gonna appear in the top panel 
@@ -133,8 +148,13 @@ class PanelListArea(ft.UserControl):
                 )
             )
 
+    def handle_delete(self, e, panel_id):
+        self.execution_results = [data for data in self.execution_results if data["timestamp_id"] != panel_id]
+        db.delete_result_by_id(panel_id)  # Elimina el registro de la base de datos
+        self.update_panels()
 
-    async def handle_delete(self, e):
-        self.panels.remove(e.control.data)
-        self.expansion_list.controls = self.panels
-        await self.update_async()
+
+    # async def handle_delete(self, e):
+    #     self.panels.remove(e.control.data)
+    #     self.expansion_list.controls = self.panels
+    #     await self.update_async()

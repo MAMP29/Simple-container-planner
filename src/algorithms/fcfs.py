@@ -37,7 +37,7 @@ class FCFS:
                 'result': result,
                 'start_time': command['start_time'],
                 'estimated_time': command['estimated_time'],
-                #'actual_execution_time': execution_time,
+                'actual_execution_time': execution_time,
                 'turnaround_time': turnaround_time,
                 'response_time': response_time
             })

@@ -1,4 +1,22 @@
 import flet as ft
+import time
+import datetime
+import random
+
+light_colors = [
+    ft.colors.BLUE_50,
+    ft.colors.RED_50,
+    ft.colors.GREEN_50,
+    ft.colors.YELLOW_50,
+    ft.colors.PINK_50,
+    ft.colors.PURPLE_50,
+    ft.colors.ORANGE_50,
+    ft.colors.TEAL_50,
+    ft.colors.INDIGO_50,
+    ft.colors.BROWN_50,
+    ft.colors.GREY_50,
+]
+
 
 class ContentArea(ft.UserControl):
     def __init__(self):
@@ -27,7 +45,14 @@ class ContentArea(ft.UserControl):
             self.update()
 
     def get_data(self):
+        
+        timestamp_id = str(int(time.time()))
+        hour_and_date = self.format_timestamp_id(timestamp_id)
+
         data = {
+            'timestamp_id': timestamp_id,
+            'hour_and_date': hour_and_date,
+            'color': random.choice(light_colors),
             'name': self.name_field.value,
             'commands': []
         }
@@ -52,6 +77,12 @@ class ContentArea(ft.UserControl):
     def get_row_count(self):
         return len(self.rows)
 
+    def format_timestamp_id(self, timestamp_id):
+        timestamp_seconds = int(timestamp_id)
+        hour_and_date = datetime.datetime.fromtimestamp(timestamp_seconds)
+        format_hour_and_date = hour_and_date.strftime("%Y-%m-%d %H:%M:%S")
+        return format_hour_and_date
+
 
     def build(self):
         return ft.Container(
@@ -66,14 +97,3 @@ class ContentArea(ft.UserControl):
             ),
             expand=True,
         )
-    
-    # def build(self):
-    #     return ft.Container(
-    #         content=ft.Column(
-    #             [
-    #                 ft.TextField(label='Nombre', width=350),
-    #                 ft.Container(height=10),
-    #                 ft.Column(self.rows, scroll=ft.ScrollMode.AUTO, height=250),
-    #             ],
-    #         ),
-    #     ),
