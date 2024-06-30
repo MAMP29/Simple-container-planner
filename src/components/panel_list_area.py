@@ -1,3 +1,4 @@
+import json
 import flet as ft
 import random
 from flet import colors
@@ -11,15 +12,17 @@ class PanelListArea(ft.UserControl):
         self.main_view = main_view # Referencia al componente principal
         self.panels = [self.create_header_panel()]
         self.expansion_list = ft.ExpansionPanelList(
-            expand_icon_color=ft.colors.AMBER,
+            expand_icon_color=ft.colors.BLACK,
             elevation=8,
-            divider_color=ft.colors.AMBER,
+            divider_color=ft.colors.BLACK,
             on_change=self.handle_change
         )
         self.panel_column = ft.Column([
             ft.Text("Panel de Registro", size=20, weight=ft.FontWeight.BOLD),
             self.expansion_list,
-        ])
+        ],
+        scroll=ft.ScrollMode.AUTO
+        )
 
 
     def build(self):
@@ -118,12 +121,21 @@ class PanelListArea(ft.UserControl):
                 ft.IconButton(
                     ft.icons.DELETE, 
                     on_click=lambda e, panel_id=data["timestamp_id"]: self.handle_delete(e, panel_id), 
+                    tooltip="Eliminar registro",
                     icon_color=ft.colors.BLACK
                 ),
                 ft.IconButton(
                     ft.icons.AUTORENEW,
                     on_click=lambda e, panel_data=data: self.handle_reuse(e, panel_data), 
+                    tooltip="Cargar a ejecución",
                     icon_color=ft.colors.BLACK,
+                ),
+                ft.IconButton(
+                    ft.icons.SIM_CARD_DOWNLOAD,
+                    on_click=lambda e, panel_data=data: self.export_to_json(panel_data),
+                    tooltip="Exportar a JSON",
+                    icon_color=ft.colors.BLACK
+                    
                 )
             ], 
             alignment=ft.MainAxisAlignment.SPACE_BETWEEN)
@@ -157,6 +169,15 @@ class PanelListArea(ft.UserControl):
     def handle_reuse(self, e, panel_data):
         self.main_view.load_execution_data(panel_data)  # Llamada al método del componente principal para cargar los datos y redirigir
         self.page.go("/")  # Navega de vuelta al área de ejecución
+
+    def export_to_json(self, panel_data):
+        try:
+            filename = f"registro_{panel_data['timestamp_id']}.json"
+            with open(filename, 'w') as json_file:
+                json.dump(panel_data, json_file, indent=4)
+            print(f"Registro exportado a {filename}")
+        except Exception as e:
+            print(f"Error al exportar el registro: {e}")
 
     # async def handle_delete(self, e):
     #     self.panels.remove(e.control.data)

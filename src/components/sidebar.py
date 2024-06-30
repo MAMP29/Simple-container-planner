@@ -12,8 +12,8 @@ class Sidebar(ft.UserControl):
                 [
                     ft.Text(value="Simple Container Planner", size=24, weight=ft.FontWeight.BOLD),
                     ft.Divider(height=2, color="black", thickness=3),
-                    ft.ElevatedButton(text="Principal", width=200, on_click=lambda _: self.page.go("/")),
-                    ft.ElevatedButton(text="Registro", width=200, on_click=lambda _: self.page.go("/registro")),
+                    ft.ElevatedButton(content=ft.Text(value="Principal", color="black"), width=200, on_click=lambda _: self.page.go("/"),bgcolor="#aad7d9"),
+                    ft.ElevatedButton(content=ft.Text(value="Registro", color="black"), width=200, on_click=lambda _: self.page.go("/registro"), bgcolor="#aad7d9"),
                 ],
                 alignment=ft.MainAxisAlignment.START,
                 horizontal_alignment=ft.CrossAxisAlignment.CENTER,
@@ -21,7 +21,7 @@ class Sidebar(ft.UserControl):
             ),
             width=250,
             alignment=ft.alignment.center,
-            bgcolor="yellow",
+            bgcolor="#ffe5b4",
         )
 
     def execute_clicked(self, e):

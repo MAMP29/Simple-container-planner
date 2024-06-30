@@ -21,16 +21,16 @@ light_colors = [
 class ContentArea(ft.UserControl):
     def __init__(self):
         super().__init__()
-        self.name_field = ft.TextField(label='Nombre', width=350)
+        self.name_field = ft.TextField(label='Nombre', width=350, bgcolor="#ffffff")
         self.rows = [self.create_row()]
         self.rows_column = ft.Column(self.rows, scroll=ft.ScrollMode.AUTO, expand=True)
 
     def create_row(self):
         return ft.Row(
             [
-                ft.TextField(label='Command', width=350),
-                ft.TextField(label='Start time', width=150,hint_text="must be a integer"),
-                ft.TextField(label='Estimated time', width=150, hint_text="must be a integer"),
+                ft.TextField(label='Command', width=350, bgcolor="#ffffff"),
+                ft.TextField(label='Start time', width=150,hint_text="must be a integer", bgcolor="#ffffff"),
+                ft.TextField(label='Estimated time', width=150, hint_text="must be a integer", bgcolor="#ffffff"),
             ],
             alignment=ft.MainAxisAlignment.CENTER,
         )
@@ -90,9 +90,9 @@ class ContentArea(ft.UserControl):
         for cmd in panel_data["commands"]:
             row = ft.Row(
                 [
-                    ft.TextField(label='Command', width=350, value=cmd["command"]),
-                    ft.TextField(label='Start time', width=150, hint_text="must be a integer", value=str(cmd["start_time"])),
-                    ft.TextField(label='Estimated time', width=150, hint_text="must be a integer", value=str(cmd["estimated_time"])),
+                    ft.TextField(label='Command', width=350, value=cmd["command"], bgcolor="#ffffff"),
+                    ft.TextField(label='Start time', width=150, hint_text="must be a integer", value=str(cmd["start_time"]), bgcolor="#ffffff"),
+                    ft.TextField(label='Estimated time', width=150, hint_text="must be a integer", value=str(cmd["estimated_time"]), bgcolor="#ffffff"),
                 ],
                 alignment=ft.MainAxisAlignment.CENTER,
             )

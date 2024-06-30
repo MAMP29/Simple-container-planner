@@ -19,7 +19,7 @@ def main(page: ft.Page):
     page.theme_mode = 'light'
     page.window.width = 1200
     page.window.height = 800
-
+    page.bgcolor = "#fbf9f1"
 
 
     panel_list_area = PanelListArea(execution_results, None)  # Inicialmente sin main_view
@@ -35,20 +35,26 @@ def main(page: ft.Page):
                 ft.View(
                     "/registro",
                     [
-                        ft.Row(
-                            [
-                                sidebar,
-                                ft.VerticalDivider(width=1),
-                                ft.Container(
-                                    content=panel_list_area,
-                                    width=400,  # Ajusta según sea necesario
-                                    height=600,  # Ajusta según sea necesario
-                                    expand=True
-                                )
-                            ],
+                        ft.Container(
+                            content=ft.Row(
+                                [
+                                    sidebar,
+                                    ft.VerticalDivider(width=1),
+                                    ft.Container(
+                                        content=panel_list_area,
+                                        expand=True,
+                                        alignment=ft.alignment.center,
+                                    )
+                                ],
+                                expand=True,
+                            ),
+                            width=page.window.width,
+                            height=page.window.height,
+                            bgcolor=page.bgcolor,
                             expand=True,
                         )
-                    ]
+                    ],
+                    bgcolor=page.bgcolor,
                 )
             )
             page.update()
@@ -58,15 +64,22 @@ def main(page: ft.Page):
                 ft.View(
                     "/",
                     [
-                        ft.Row(
-                            [
-                                sidebar,
-                                ft.VerticalDivider(width=1),
-                                principal_content_area
-                            ],
-                            expand=True
+                        ft.Container(
+                            content=ft.Row(
+                                [
+                                    sidebar,
+                                    ft.VerticalDivider(width=1),
+                                    principal_content_area
+                                ],
+                                expand=True
+                            ),
+                            width=page.window.width,
+                            height=page.window.height,
+                            bgcolor=page.bgcolor,
+                            expand=True,
                         )
-                    ]
+                    ],
+                    bgcolor=page.bgcolor,
                 )
             )
         page.update()

@@ -26,15 +26,16 @@ class ButtonRow(ft.UserControl):
                 ft.dropdown.Option("HRRN"),
                 ft.dropdown.Option("Round Robin 2q"),
             ],
+            bgcolor="#ffffff"
         )
-        self.execute_button = ft.ElevatedButton(text="Ejecutar", width=600, on_click=self.execute_comands)
+        self.execute_button = ft.ElevatedButton(content=ft.Text(value="Ejecutar", color="black"), width=600, on_click=self.execute_comands, bgcolor="#aad7d9")
 
         self.add_button = ft.IconButton(
             icon=ft.icons.ADD,
             icon_color="black",
             icon_size=20,
             tooltip="Nuevo comando",
-            bgcolor="blue",
+            bgcolor="#a2c8cc",
             on_click=self.add_command,
         )
 
@@ -43,7 +44,7 @@ class ButtonRow(ft.UserControl):
             icon_color="black",
             icon_size=20,
             tooltip="Debe de haber al menos un comando",
-            bgcolor="grey",
+            bgcolor="#ced4da",
             on_click=self.remove_command,
             disabled=True,
         )
@@ -61,11 +62,11 @@ class ButtonRow(ft.UserControl):
     def update_remove_button(self):
         if (self.content_area.get_row_count() <= 1):
             self.remove_button.disabled = True
-            self.remove_button.bgcolor = "grey"
+            self.remove_button.bgcolor = "#ced4da"
             self.remove_button.tooltip = "Debe de haber al menos un comando"
         else:
             self.remove_button.disabled = False
-            self.remove_button.bgcolor = "red"
+            self.remove_button.bgcolor = "#ff8787"
             self.remove_button.tooltip = "Quitar comando"
 
     # Execute the commands of the user 
