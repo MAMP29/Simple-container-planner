@@ -15,6 +15,7 @@ class ButtonRow(ft.UserControl):
         super().__init__()
         self.content_area = content_area
         self.panel_list_area = panel_list_area if panel_list_area is not None else PanelListArea([], None)
+        self.executed_commands = set()
         self.dropdown = ft.Dropdown(
             label="Algoritmo",
             width=200,
@@ -49,8 +50,19 @@ class ButtonRow(ft.UserControl):
             disabled=True,
         )
 
+        self.command_dropdown = ft.Dropdown(
+            label="Comandos guardados",
+            width=200,
+            hint_text="Selecciona el comando",
+            bgcolor="#ffffff",
+            options=[]
+        )
+
     def add_command(self, e):
-        self.content_area.add_row()
+        command = self.command_dropdown.value
+        self.content_area.add_row(command if command else "")
+        self.command_dropdown.value = None
+        self.command_dropdown.update()
         self.update_remove_button()
         self.update()
 
@@ -154,9 +166,18 @@ class ButtonRow(ft.UserControl):
         
         # Save execution_results in the database
         db.save_results(execution_results)
+
+        # Update executed commands
+        self.update_executed_commands(data['commands'])
         
         #update the panel list area
         self.content_area.clear()
+
+    def update_executed_commands(self, commands):
+        for cmd in commands:
+            self.executed_commands.add(cmd['command'])
+        self.command_dropdown.options = [ft.dropdown.Option(cmd) for cmd in self.executed_commands]
+        self.command_dropdown.update()
 
 
     def build(self):
@@ -166,6 +187,8 @@ class ButtonRow(ft.UserControl):
                     [
                         self.add_button,
                         self.remove_button,
+                        ft.Container(width=2),
+                        self.command_dropdown
                     ],
                     alignment=ft.MainAxisAlignment.START,
                 ),

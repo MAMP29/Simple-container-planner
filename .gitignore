@@ -18,3 +18,5 @@ src/algorithms/__pycache__/hrrn.cpython-312.pyc
 src/algorithms/__pycache__/round_robin.cpython-312.pyc
 src/algorithms/__pycache__/srt.cpython-312.pyc
 src/utils/__pycache__/docker_utils.cpython-312.pyc
+src/components/__pycache__/autocomplete_tf.cpython-312.pyc
+src/components/autocomplete_tf.py

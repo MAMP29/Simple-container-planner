@@ -25,18 +25,18 @@ class ContentArea(ft.UserControl):
         self.rows = [self.create_row()]
         self.rows_column = ft.Column(self.rows, scroll=ft.ScrollMode.AUTO, expand=True)
 
-    def create_row(self):
+    def create_row(self, command=""):
         return ft.Row(
             [
-                ft.TextField(label='Command', width=350, bgcolor="#ffffff"),
-                ft.TextField(label='Start time', width=150,hint_text="must be a integer", bgcolor="#ffffff"),
-                ft.TextField(label='Estimated time', width=150, hint_text="must be a integer", bgcolor="#ffffff"),
+                ft.TextField(label='Command', width=350, bgcolor="#ffffff", value=command),
+                ft.TextField(label='Start time', width=150, hint_text="must be an integer", bgcolor="#ffffff"),
+                ft.TextField(label='Estimated time', width=150, hint_text="must be an integer", bgcolor="#ffffff"),
             ],
             alignment=ft.MainAxisAlignment.CENTER,
         )
 
-    def add_row(self):
-        self.rows.append(self.create_row())
+    def add_row(self, command=""):
+        self.rows.append(self.create_row(command))
         self.update()
 
     def remove_row(self):
