@@ -2,7 +2,7 @@ import time
 import flet as ft
 from data_manager import db
 from execution_results import execution_results
-from components.content_area import ContentArea
+from components.panel_list_area import PanelListArea
 from utils.docker_utils import execute_command
 from algorithms.fcfs import FCFS
 from algorithms.spn import SPN
@@ -14,7 +14,7 @@ class ButtonRow(ft.UserControl):
     def __init__(self, content_area, panel_list_area):
         super().__init__()
         self.content_area = content_area
-        self.panel_list_area = panel_list_area
+        self.panel_list_area = panel_list_area if panel_list_area is not None else PanelListArea([], None)
         self.dropdown = ft.Dropdown(
             label="Algoritmo",
             width=200,

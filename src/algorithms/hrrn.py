@@ -43,6 +43,7 @@ class HRRN:
                 "result": result,
                 "start_time": command_to_run["start_time"],
                 "estimated_time": command_to_run["estimated_time"],
+                'actual_execution_time': execution_time,
                 "turnaround_time": turnaround_time,
                 "response_time": response_time
             })

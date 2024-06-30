@@ -5,10 +5,10 @@ from data_manager import db
 
 
 class PanelListArea(ft.UserControl):
-    def __init__(self, execution_results):
+    def __init__(self, execution_results, main_view):
         super().__init__()
         self.execution_results = execution_results
-        print(self.execution_results)
+        self.main_view = main_view # Referencia al componente principal
         self.panels = [self.create_header_panel()]
         self.expansion_list = ft.ExpansionPanelList(
             expand_icon_color=ft.colors.AMBER,
@@ -122,6 +122,7 @@ class PanelListArea(ft.UserControl):
                 ),
                 ft.IconButton(
                     ft.icons.AUTORENEW,
+                    on_click=lambda e, panel_data=data: self.handle_reuse(e, panel_data), 
                     icon_color=ft.colors.BLACK,
                 )
             ], 
@@ -153,6 +154,9 @@ class PanelListArea(ft.UserControl):
         db.delete_result_by_id(panel_id)  # Elimina el registro de la base de datos
         self.update_panels()
 
+    def handle_reuse(self, e, panel_data):
+        self.main_view.load_execution_data(panel_data)  # Llamada al método del componente principal para cargar los datos y redirigir
+        self.page.go("/")  # Navega de vuelta al área de ejecución
 
     # async def handle_delete(self, e):
     #     self.panels.remove(e.control.data)

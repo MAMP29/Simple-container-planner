@@ -53,6 +53,7 @@ class SPN:
                     'result': result,
                     'start_time': next_command['start_time'],
                     'estimated_time': next_command['estimated_time'],
+                    'actual_execution_time': execution_time,
                     'turnaround_time': turnaround_time,
                     'response_time': response_time
                 })

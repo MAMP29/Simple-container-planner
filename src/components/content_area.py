@@ -83,6 +83,25 @@ class ContentArea(ft.UserControl):
         format_hour_and_date = hour_and_date.strftime("%Y-%m-%d %H:%M:%S")
         return format_hour_and_date
 
+    def load_execution_data(self, panel_data):
+        self.name_field.value = panel_data["nombre"]
+        self.rows = []
+
+        for cmd in panel_data["commands"]:
+            row = ft.Row(
+                [
+                    ft.TextField(label='Command', width=350, value=cmd["command"]),
+                    ft.TextField(label='Start time', width=150, hint_text="must be a integer", value=str(cmd["start_time"])),
+                    ft.TextField(label='Estimated time', width=150, hint_text="must be a integer", value=str(cmd["estimated_time"])),
+                ],
+                alignment=ft.MainAxisAlignment.CENTER,
+            )
+            self.rows.append(row)
+
+        self.rows_column.controls = self.rows
+        if self.page:
+            self.update()
+
 
     def build(self):
         return ft.Container(

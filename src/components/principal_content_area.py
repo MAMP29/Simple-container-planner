@@ -38,3 +38,7 @@ class PrincipalContentArea(ft.UserControl):
             padding=20,
             expand=True
         )
+    
+    def load_execution_data(self, panel_data):
+        self.content_area.load_execution_data(panel_data)
+        self.button_row.update_remove_button()

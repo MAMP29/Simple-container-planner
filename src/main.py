@@ -17,8 +17,14 @@ def main(page: ft.Page):
     inicializar_app()
     page.title = "Simple Container Planner"
     page.theme_mode = 'light'
+    page.window.width = 1200
+    page.window.height = 800
 
-    panel_list_area = PanelListArea(execution_results)
+
+
+    panel_list_area = PanelListArea(execution_results, None)  # Inicialmente sin main_view
+    principal_content_area = PrincipalContentArea(panel_list_area)  # Pasar panel_list_area al principal_content_area
+    panel_list_area.main_view = principal_content_area  # Establece principal_content_area en panel_list_area
 
     def route_change(route):
         sidebar = Sidebar(page)
@@ -56,7 +62,7 @@ def main(page: ft.Page):
                             [
                                 sidebar,
                                 ft.VerticalDivider(width=1),
-                                PrincipalContentArea(panel_list_area)
+                                principal_content_area
                             ],
                             expand=True
                         )
