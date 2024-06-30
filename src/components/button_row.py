@@ -85,7 +85,16 @@ class ButtonRow(ft.UserControl):
     def execute_comands(self, e):
         global execution_results
         data = self.content_area.get_data()
+
+        if not data:
+            return
+
         algoritmo = self.dropdown.value
+
+        if not algoritmo:
+            self.show_error_message("Selecciona un algoritmo")
+            return
+
         print(data)
         results = []
         avg_turnaround_time = 0
@@ -179,6 +188,21 @@ class ButtonRow(ft.UserControl):
         self.command_dropdown.options = [ft.dropdown.Option(cmd) for cmd in self.executed_commands]
         self.command_dropdown.update()
 
+    def show_error_message(self, message):
+        def close_dialog(e):
+            self.page.dialog.open = False
+            self.page.update()
+
+        dialog = ft.AlertDialog(
+            title=ft.Text("Error"),
+            content=ft.Text(message),
+            actions=[
+                ft.TextButton("OK", on_click=close_dialog)
+            ]
+        )
+        self.page.dialog = dialog
+        self.page.dialog.open = True
+        self.page.update()
 
     def build(self):
         return ft.Column(
