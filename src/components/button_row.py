@@ -1,4 +1,7 @@
+import os
+import shlex
 import time
+import subprocess
 import flet as ft
 from data_manager import db
 from execution_results import execution_results
@@ -92,7 +95,14 @@ class ButtonRow(ft.UserControl):
         algoritmo = self.dropdown.value
 
         if not algoritmo:
-            self.show_error_message("Selecciona un algoritmo")
+            self.content_area.show_error_message("Selecciona un algoritmo")
+            return
+
+        invalid_commands = self.validate_commands(data['commands'])
+
+        if invalid_commands:
+            invalid_command_names = ", ".join(invalid_commands)
+            self.content_area.show_error_message(f"Comandos no válidos: {invalid_command_names}")
             return
 
         print(data)
@@ -188,21 +198,45 @@ class ButtonRow(ft.UserControl):
         self.command_dropdown.options = [ft.dropdown.Option(cmd) for cmd in self.executed_commands]
         self.command_dropdown.update()
 
-    def show_error_message(self, message):
-        def close_dialog(e):
-            self.page.dialog.open = False
-            self.page.update()
+    @staticmethod
+    def is_command_in_safe_directory(command_path):
+        safe_directories = [
+            '/bin', '/usr/bin', '/usr/local/bin',
+            '/sbin', '/usr/sbin', '/usr/local/sbin',
+            os.path.expanduser('~/.local/bin')  # Directorio común para comandos del usuario
+        ]
+        return any(command_path.startswith(directory) for directory in safe_directories)
 
-        dialog = ft.AlertDialog(
-            title=ft.Text("Error"),
-            content=ft.Text(message),
-            actions=[
-                ft.TextButton("OK", on_click=close_dialog)
-            ]
-        )
-        self.page.dialog = dialog
-        self.page.dialog.open = True
-        self.page.update()
+    def validate_commands(self, commands):
+        invalid_commands = []
+        for command_data in commands:
+            if not command_data['verify']:
+                continue  # Skip validation if verify is False
+            command = command_data['command']
+            command_name = shlex.split(command)[0]
+            try:
+                result = subprocess.run(['which', command_name], check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+                if not self.is_command_in_safe_directory(result.stdout.strip()):
+                    invalid_commands.append(command)
+            except subprocess.CalledProcessError:
+                invalid_commands.append(command)
+        return invalid_commands
+
+    # def show_error_message(self, message):
+    #     def close_dialog(e):
+    #         self.page.dialog.open = False
+    #         self.page.update()
+
+    #     dialog = ft.AlertDialog(
+    #         title=ft.Text("Error"),
+    #         content=ft.Text(message),
+    #         actions=[
+    #             ft.TextButton("OK", on_click=close_dialog)
+    #         ]
+    #     )
+    #     self.page.dialog = dialog
+    #     self.page.dialog.open = True
+    #     self.page.update()
 
     def build(self):
         return ft.Column(

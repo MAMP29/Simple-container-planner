@@ -23,8 +23,19 @@ class ContentArea(ft.UserControl):
     def __init__(self):
         super().__init__()
         self.name_field = ft.TextField(label='Nombre', width=350, bgcolor="#ffffff", on_blur=lambda e: self.validate_command(e, "Debe de haber un nombre"))
+        # self.switch =ft.Switch(
+        #     value=False, 
+        #     active_color="#a2c8cc0",
+        #     inactive_thumb_color="#ced4da", 
+        #     inactive_track_color="#a2c8cc0", 
+        #     label="Verificar", 
+        #     label_position=ft.LabelPosition.RIGHT, 
+        #     label_style=ft.TextStyle(color=ft.colors.BLACK)
+        # )
+
         self.rows = [self.create_row()]
         self.rows_column = ft.Column(self.rows, scroll=ft.ScrollMode.AUTO, expand=True)
+
 
     def create_row(self, command=""):
         return ft.Row(
@@ -32,9 +43,24 @@ class ContentArea(ft.UserControl):
                 ft.TextField(label='Command', width=350, bgcolor="#ffffff", value=command, on_blur=self.validate_command),
                 ft.TextField(label='Start time', width=150, hint_text="must be an integer", bgcolor="#ffffff", on_blur=self.validate_time),
                 ft.TextField(label='Estimated time', width=150, hint_text="must be an integer", bgcolor="#ffffff", on_blur=self.validate_time),
+                ft.Container(width=10),
+                ft.Container(
+                    content=ft.Switch(
+                        value=True, 
+                        active_color="#a2c8cc0",
+                        inactive_thumb_color="#ced4da", 
+                        inactive_track_color="#a2c8cc0", 
+                        label="Verificar", 
+                        label_position=ft.LabelPosition.RIGHT, 
+                        label_style=ft.TextStyle(color=ft.colors.BLACK)
+                    ), 
+                    padding=ft.padding.all(5), border_radius=10, bgcolor="#aad7d9",
+                )
             ],
             alignment=ft.MainAxisAlignment.CENTER,
         )
+    
+
     
     def validate_command(self, e, text="El comando es obligatorio"):
         text_field = e.control
@@ -74,10 +100,12 @@ class ContentArea(ft.UserControl):
             'commands': []
         }
         for row in self.rows:
+            switch = row.controls[4].content
             row_data = {
                 'command': row.controls[0].value,
                 'start_time': row.controls[1].value,
                 'estimated_time': row.controls[2].value,
+                'verify': switch.value,
             }
             data['commands'].append(row_data)
         return data
