@@ -23,16 +23,6 @@ class ContentArea(ft.UserControl):
     def __init__(self):
         super().__init__()
         self.name_field = ft.TextField(label='Nombre', width=350, bgcolor="#ffffff", on_blur=lambda e: self.validate_command(e, "Debe de haber un nombre"))
-        # self.switch =ft.Switch(
-        #     value=False, 
-        #     active_color="#a2c8cc0",
-        #     inactive_thumb_color="#ced4da", 
-        #     inactive_track_color="#a2c8cc0", 
-        #     label="Verificar", 
-        #     label_position=ft.LabelPosition.RIGHT, 
-        #     label_style=ft.TextStyle(color=ft.colors.BLACK)
-        # )
-
         self.rows = [self.create_row()]
         self.rows_column = ft.Column(self.rows, scroll=ft.ScrollMode.AUTO, expand=True)
 
@@ -61,7 +51,6 @@ class ContentArea(ft.UserControl):
         )
     
 
-    
     def validate_command(self, e, text="El comando es obligatorio"):
         text_field = e.control
         if not text_field.value:
@@ -171,14 +160,12 @@ class ContentArea(ft.UserControl):
         self.rows = []
 
         for cmd in panel_data["commands"]:
-            row = ft.Row(
-                [
-                    ft.TextField(label='Command', width=350, value=cmd["command"], bgcolor="#ffffff", on_blur=self.validate_command),
-                    ft.TextField(label='Start time', width=150, hint_text="must be a integer", value=str(cmd["start_time"]), bgcolor="#ffffff", on_blur=self.validate_time),
-                    ft.TextField(label='Estimated time', width=150, hint_text="must be a integer", value=str(cmd["estimated_time"]), bgcolor="#ffffff", on_blur=self.validate_time),
-                ],
-                alignment=ft.MainAxisAlignment.CENTER,
-            )
+            row = self.create_row(command=cmd["command"])
+            
+            row.controls[1].value = str(cmd["start_time"])  
+            row.controls[2].value = str(cmd["estimated_time"])  
+            row.controls[4].content.value = True 
+            
             self.rows.append(row)
 
         self.rows_column.controls = self.rows
@@ -192,7 +179,7 @@ class ContentArea(ft.UserControl):
                 [
                     self.name_field,
                     ft.Container(height=10),
-                    self.rows_column
+                    self.rows_column,
                 ],            
                 #tight=True,
                 expand=True,
