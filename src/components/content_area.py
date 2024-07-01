@@ -137,6 +137,22 @@ class ContentArea(ft.UserControl):
         self.page.dialog.open = True
         self.page.update()
 
+    def show_succed_message(self, message):
+        def close_dialog(e):
+            self.page.dialog.open = False
+            self.page.update()
+
+        dialog = ft.AlertDialog(
+            title=ft.Text("¡Éxito!"),
+            content=ft.Text(message),
+            actions=[
+                ft.TextButton("OK", on_click=close_dialog)
+            ]
+        )
+        self.page.dialog = dialog
+        self.page.dialog.open = True
+        self.page.update() 
+
     #delete text of the textfields in self.rows
     def clear(self):
         self.name_field.value = ''

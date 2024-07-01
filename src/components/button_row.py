@@ -87,110 +87,98 @@ class ButtonRow(ft.UserControl):
     # Execute the commands of the user 
     def execute_comands(self, e):
         global execution_results
-        data = self.content_area.get_data()
+        self.execute_button.disabled = True
 
-        if not data:
-            return
+        try: 
+            data = self.content_area.get_data()
 
-        algoritmo = self.dropdown.value
+            if not data:
+                self.execute_button.disabled = False
+                self.update()
+                return
 
-        if not algoritmo:
-            self.content_area.show_error_message("Selecciona un algoritmo")
-            return
+            algoritmo = self.dropdown.value
 
-        invalid_commands = self.validate_commands(data['commands'])
+            if not algoritmo:
+                self.content_area.show_error_message("Selecciona un algoritmo")
+                self.execute_button.disabled = False
+                self.update()
+                return
 
-        if invalid_commands:
-            invalid_command_names = ", ".join(invalid_commands)
-            self.content_area.show_error_message(f"Comandos no válidos: {invalid_command_names}")
-            return
+            invalid_commands = self.validate_commands(data['commands'])
 
-        print(data)
-        results = []
-        avg_turnaround_time = 0
-        avg_response_time = 0
+            if invalid_commands:
+                invalid_command_names = ", ".join(invalid_commands)
+                self.content_area.show_error_message(f"Comandos no válidos: {invalid_command_names}")
+                self.execute_button.disabled = False
+                self.update()
+                return
 
-        if algoritmo == 'FCFS':
-            fcfs = FCFS(data['commands'])
-            results, avg_turnaround_time, avg_response_time = fcfs.run()
+            results = []
+            avg_turnaround_time = 0
+            avg_response_time = 0
 
-            for result in results:
-                print(f"Resultado del comando: {result['result']}")
-                print(f"Turnaround time: {result['turnaround_time']}")
-                print(f"Response time: {result['response_time']}")
+            if algoritmo == 'FCFS':
+                fcfs = FCFS(data['commands'])
+                results, avg_turnaround_time, avg_response_time = fcfs.run()
 
-        elif algoritmo == 'SPN':
-            spn = SPN(data['commands'])
-            results, avg_turnaround_time, avg_response_time = spn.run()
+            elif algoritmo == 'SPN':
+                spn = SPN(data['commands'])
+                results, avg_turnaround_time, avg_response_time = spn.run()
 
-            for result in results:
-                print(f"Resultado del comando: {result['result']}")
-                print(f"Turnaround time: {result['turnaround_time']}")
-                print(f"Response time: {result['response_time']}")
+            elif algoritmo == 'SRT':
+                srt = SRT(data['commands'])
+                results, avg_turnaround_time, avg_response_time = srt.run()
 
-        elif algoritmo == 'SRT':
-            srt = SRT(data['commands'])
-            results, avg_turnaround_time, avg_response_time = srt.run()
+            elif algoritmo == 'HRRN':
+                hrrn = HRRN(data['commands'])
+                results, avg_turnaround_time, avg_response_time = hrrn.run()
 
-            for result in results:
-                print(f"Resultado del comando: {result['result']}")
-                print(f"Turnaround time: {result['turnaround_time']}")
-                print(f"Response time: {result['response_time']}")
 
-        elif algoritmo == 'HRRN':
-            hrrn = HRRN(data['commands'])
-            results, avg_turnaround_time, avg_response_time = hrrn.run()
+            elif algoritmo == 'Round Robin 2q':
+                rr2q = RR2Q(data['commands'],2)
+                results, avg_turnaround_time, avg_response_time = rr2q.execute()
 
-            for result in results:
-                print(f"Resultado del comando: {result['result']}")
-                print(f"Turnaround time: {result['turnaround_time']}")
-                print(f"Response time: {result['response_time']}")
 
-        elif algoritmo == 'Round Robin 2q':
-            rr2q = RR2Q(data['commands'],2)
-            results, avg_turnaround_time, avg_response_time = rr2q.execute()
+            #Create a dictionary of the execution data
+            execution_data = {
+                "timestamp_id": data["timestamp_id"],
+                "hour_and_date": data["hour_and_date"],
+                "color": data["color"],
+                "nombre": data["name"],
+                "algoritmo": algoritmo,
+                "total_time": time.strftime("%H:%M:%S", time.gmtime(sum([r['turnaround_time'] for r in results]))),
+                "avg_turnaround_time": time.strftime("%H:%M:%S", time.gmtime(avg_turnaround_time)),
+                "avg_response_time": time.strftime("%H:%M:%S", time.gmtime(avg_response_time)),
+                "commands": results
+            }
 
-            for result in results:
-                print(f"Resultado del comando: {result['result']}")
-                print(f"Turnaround time: {result['turnaround_time']}")
-                print(f"Response time: {result['response_time']}")
+            #add execution_data to the global list
+            execution_results.append(execution_data)
 
-        print(f"Average Turnaround Time: {avg_turnaround_time}")
-        print(f"Average Response Time: {avg_response_time}")
+            #update result panel
+            self.panel_list_area.add_panel(execution_data)
+            self.panel_list_area.update_panels()
+            
+            # Save execution_results in the database
+            db.save_results(execution_results)
 
-        #Create a dictionary of the execution data
-        execution_data = {
-            "timestamp_id": data["timestamp_id"],
-            "hour_and_date": data["hour_and_date"],
-            "color": data["color"],
-            "nombre": data["name"],
-            "algoritmo": algoritmo,
-            "total_time": time.strftime("%H:%M:%S", time.gmtime(sum([r['turnaround_time'] for r in results]))),
-            "avg_turnaround_time": time.strftime("%H:%M:%S", time.gmtime(avg_turnaround_time)),
-            "avg_response_time": time.strftime("%H:%M:%S", time.gmtime(avg_response_time)),
-            "commands": results
-        }
+            # Update executed commands
+            self.update_executed_commands(data['commands'])
+            
+            #update the panel list area
+            self.content_area.clear()
 
-        print("-----------------Execution data:")
-        print(execution_data)
+            self.content_area.show_succed_message("La ejecución ha terminado")
 
-        #add execution_data to the global list
-        execution_results.append(execution_data)
-        print(execution_results)
+        except Exception as ex:
+            self.content_area.show_error_message(f"Ocurrió un error durante la ejecución: {str(ex)}")
 
-        #update result panel
-        #new_panel = self.panel_list_area.create_panel(execution_data)
-        self.panel_list_area.add_panel(execution_data)
-        self.panel_list_area.update_panels()
-        
-        # Save execution_results in the database
-        db.save_results(execution_results)
+        finally:
+            self.execute_button.disabled = False
 
-        # Update executed commands
-        self.update_executed_commands(data['commands'])
-        
-        #update the panel list area
-        self.content_area.clear()
+
+
 
     def update_executed_commands(self, commands):
         for cmd in commands:
@@ -211,7 +199,7 @@ class ButtonRow(ft.UserControl):
         invalid_commands = []
         for command_data in commands:
             if not command_data['verify']:
-                continue  # Skip validation if verify is False
+                continue  # Saltar esta validación si 'verify' es falso
             command = command_data['command']
             command_name = shlex.split(command)[0]
             try:
@@ -222,21 +210,6 @@ class ButtonRow(ft.UserControl):
                 invalid_commands.append(command)
         return invalid_commands
 
-    # def show_error_message(self, message):
-    #     def close_dialog(e):
-    #         self.page.dialog.open = False
-    #         self.page.update()
-
-    #     dialog = ft.AlertDialog(
-    #         title=ft.Text("Error"),
-    #         content=ft.Text(message),
-    #         actions=[
-    #             ft.TextButton("OK", on_click=close_dialog)
-    #         ]
-    #     )
-    #     self.page.dialog = dialog
-    #     self.page.dialog.open = True
-    #     self.page.update()
 
     def build(self):
         return ft.Column(
@@ -246,7 +219,7 @@ class ButtonRow(ft.UserControl):
                         self.add_button,
                         self.remove_button,
                         ft.Container(width=2),
-                        self.command_dropdown
+                        self.command_dropdown,
                     ],
                     alignment=ft.MainAxisAlignment.START,
                 ),
