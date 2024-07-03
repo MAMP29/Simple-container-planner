@@ -3,12 +3,12 @@ import flet as ft
 import random
 from flet import colors
 from data_manager import db
-
+from execution_results import execution_results_manager
 
 class PanelListArea(ft.UserControl):
-    def __init__(self, execution_results, main_view):
+    def __init__(self, main_view):
         super().__init__()
-        self.execution_results = execution_results
+        #self.execution_results = execution_results
         self.main_view = main_view # Referencia al componente principal
         self.panels = [self.create_header_panel()]
         self.expansion_list = ft.ExpansionPanelList(
@@ -33,9 +33,8 @@ class PanelListArea(ft.UserControl):
         
 
     def update_panels(self):
-        # Limpiar los paneles actuales y agregar nuevamente
         self.panels = [self.create_header_panel()]
-        for data in self.execution_results:
+        for data in execution_results_manager.get_results():
             new_panel = self.create_panel(data)
             self.panels.append(new_panel)
         self.expansion_list.controls = self.panels
@@ -58,14 +57,14 @@ class PanelListArea(ft.UserControl):
 
     def create_panel(self, data):
 
-        print("------------------------------------------------")
-        print("Creating panel with data:")
-        print(data)
+        # print("------------------------------------------------")
+        # print("Creating panel with data:")
+        # print(data)
     
-        for cmd in data["commands"]:
-            print("Command data:")
-            print(cmd)
-        print("------------------------------------------------")
+        # for cmd in data["commands"]:
+        #     print("Command data:")
+        #     print(cmd)
+        # print("------------------------------------------------")
 
         table = ft.DataTable(
             columns=[
@@ -93,11 +92,6 @@ class PanelListArea(ft.UserControl):
         listTitle = ft.ListTile(
             title=ft.Text(f"Panel: {data['timestamp_id']}"),
             subtitle=ft.Text(f"Fecha de creación: {data['hour_and_date']}"),
-            # trailing=ft.IconButton(
-            #     ft.icons.DELETE, 
-            #     on_click=lambda e, panel_id=data["timestamp_id"]: self.handle_delete(e, panel_id), 
-            #     icon_color=ft.colors.BLACK
-            # )
         )
 
         content = ft.Column([
@@ -106,11 +100,9 @@ class PanelListArea(ft.UserControl):
                 ft.VerticalDivider(width=2),
                 ft.Column([
                     ft.Text(f"Algoritmo: {data['algoritmo']}", weight=ft.FontWeight.BOLD),
-                    ft.Text(f"Tiempo total de ejecución: {data['total_time']}"),
-                    ft.Text(f"Turnaround time promedio: {data['avg_turnaround_time']}"),
-                    ft.Text(f"Response time promedio: {data['avg_response_time']}"),
-                    # ElevatedButton("Exportar a JSON", on_click=lambda e: self.export_to_json(data)),
-                    # ElevatedButton("Exportar a CSV", on_click=lambda e: self.export_to_csv(data)),
+                    ft.Text(f"Tiempo total de ejecución: \n {data['total_time']}"),
+                    ft.Text(f"Turnaround time promedio: \n {data['avg_turnaround_time']}"),
+                    ft.Text(f"Response time promedio: \n {data['avg_response_time']}"),
                 ]),
             ]),
             ft.Row([
@@ -162,8 +154,7 @@ class PanelListArea(ft.UserControl):
             )
 
     def handle_delete(self, e, panel_id):
-        self.execution_results = [data for data in self.execution_results if data["timestamp_id"] != panel_id]
-        db.delete_result_by_id(panel_id)  # Elimina el registro de la base de datos
+        db.delete_result_by_id(panel_id)
         self.update_panels()
 
     def handle_reuse(self, e, panel_data):
@@ -178,8 +169,3 @@ class PanelListArea(ft.UserControl):
             print(f"Registro exportado a {filename}")
         except Exception as e:
             print(f"Error al exportar el registro: {e}")
-
-    # async def handle_delete(self, e):
-    #     self.panels.remove(e.control.data)
-    #     self.expansion_list.controls = self.panels
-    #     await self.update_async()

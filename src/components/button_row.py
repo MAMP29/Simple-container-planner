@@ -4,7 +4,7 @@ import time
 import subprocess
 import flet as ft
 from data_manager import db
-from execution_results import execution_results
+from execution_results import execution_results_manager
 from components.panel_list_area import PanelListArea
 from utils.docker_utils import execute_command
 from algorithms.fcfs import FCFS
@@ -86,7 +86,11 @@ class ButtonRow(ft.UserControl):
 
     # Execute the commands of the user 
     def execute_comands(self, e):
-        global execution_results
+
+        print("THE GLOBAL LIST")
+        print(execution_results_manager.get_results())
+        print("----------------------...............................................")
+
         self.execute_button.disabled = True
 
         try: 
@@ -153,22 +157,18 @@ class ButtonRow(ft.UserControl):
                 "commands": results
             }
 
-            #add execution_data to the global list
-            execution_results.append(execution_data)
-
-            #update result panel
+            execution_results_manager.add_result(execution_data)
             self.panel_list_area.add_panel(execution_data)
             self.panel_list_area.update_panels()
             
             # Save execution_results in the database
-            db.save_results(execution_results)
-
+            db.save_results(execution_results_manager.get_results())
+            
             # Update executed commands
             self.update_executed_commands(data['commands'])
             
-            #update the panel list area
+            # update the panel list area
             self.content_area.clear()
-
             self.content_area.show_succed_message("La ejecución ha terminado")
 
         except Exception as ex:

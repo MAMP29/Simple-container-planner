@@ -1,7 +1,7 @@
 import json
 import redis
 
-from execution_results import execution_results
+from execution_results import execution_results_manager
 
 class Connection():
     def __init__(self):
@@ -17,10 +17,10 @@ class Connection():
         
 
     # Save execution_results in the database
-    def save_results(self, execution_results):
+    def save_results(self, results):
         print("Saving results...")
         self.connection.delete("execution_results")  # Clear existing data
-        for i, result in enumerate(execution_results):
+        for i, result in enumerate(results):
             serialized_result = json.dumps(result)
             self.connection.lpush("execution_results", serialized_result)
             print(f"Saved result {i}: {serialized_result}")
@@ -28,15 +28,15 @@ class Connection():
         
 
     def load_results(self):
-        global execution_results
         print("Loading results...")
-        execution_results.clear()
+        execution_results_manager.clear_results()
         results = self.connection.lrange("execution_results", 0, -1)
         for result in results:
             deserialized_result = json.loads(result)
-            execution_results.append(deserialized_result)
+            execution_results_manager.add_result(deserialized_result)
             print(f"Loaded result: {deserialized_result}")
         print("Results loaded successfully!")
+        return execution_results_manager.get_results()
 
 
 
@@ -44,13 +44,13 @@ class Connection():
     def clear_results(self):
         print("Deleting results...")
         self.connection.delete("execution_results")
-        execution_results.clear()
+        execution_results_manager.clear()
         print("Results deleted successfully!")
 
     # Print results
     def print_results(self):
         print("Printing results...")
-        for i, result in enumerate(execution_results):
+        for i, result in enumerate(execution_results_manager.get_results()):
             print(f"Result {i+1}: {result}")
         print("Results printed successfully!")
         
@@ -62,6 +62,7 @@ class Connection():
             if result["timestamp_id"] == timestamp_id:
                 self.connection.lrem("execution_results", 1, key)
                 break
+        execution_results_manager.delete_result(timestamp_id)
         print("Result deleted successfully!")
 
 db = Connection()

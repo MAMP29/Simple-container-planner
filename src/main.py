@@ -4,25 +4,22 @@ from components.panel_list_area import PanelListArea
 from components.sidebar import Sidebar
 from utils.docker_utils import *
 from data_manager import db
-from execution_results import execution_results
 
 def inicializar_app():
     create_image()
     db.connect()
     db.load_results()
-    db.print_results()
 
 def main(page: ft.Page):
-    global execution_results
     inicializar_app()
     page.title = "Simple Container Planner"
     page.theme_mode = 'light'
-    page.window.width = 1200
+    page.window.width = 1550
     page.window.height = 800
     page.bgcolor = "#fbf9f1"
 
 
-    panel_list_area = PanelListArea(execution_results, None)  # Inicialmente sin main_view
+    panel_list_area = PanelListArea(None)  # Inicialmente sin main_view
     principal_content_area = PrincipalContentArea(panel_list_area)  # Pasar panel_list_area al principal_content_area
     panel_list_area.main_view = principal_content_area  # Establece principal_content_area en panel_list_area
 
