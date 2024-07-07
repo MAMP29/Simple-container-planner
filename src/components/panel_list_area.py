@@ -1,7 +1,5 @@
 import json
 import flet as ft
-import random
-from flet import colors
 from data_manager import db
 from execution_results import execution_results_manager
 

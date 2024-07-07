@@ -2,7 +2,6 @@ import flet as ft
 import time
 import datetime
 import random
-from components.alert_dialog import AlertDialog
 
 light_colors = [
     ft.colors.BLUE_50,
