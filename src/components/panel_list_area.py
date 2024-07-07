@@ -56,7 +56,7 @@ class PanelListArea(ft.UserControl):
 
     def create_panel(self, data):
         
-        retraso_str = "Si" if data['retraso_artificial'] == 'True' else 'No'
+        retraso_str = "Si" if data['retraso_artificial'] else 'No'
 
         def truncate_command(command, max_length=20):
                 return command if len(command) <= max_length else command[:max_length] + '...'

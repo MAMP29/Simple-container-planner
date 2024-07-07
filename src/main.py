@@ -7,7 +7,6 @@ from data_manager import db
 
 def inicializar_app():
     create_image()
-    create_database_container()
     db.connect()
     db.load_results()
 

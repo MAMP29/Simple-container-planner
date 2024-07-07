@@ -2,6 +2,7 @@ import json
 import redis
 
 from execution_results import execution_results_manager
+from utils.docker_utils import create_database_container
 
 class Connection():
     def __init__(self):
@@ -9,6 +10,7 @@ class Connection():
 
     def connect(self):
         print("Connecting to database...")
+        create_database_container()
         try:
             self.connection = redis.Redis(host='localhost', port=6379, decode_responses=True)
             print("Connected to database.")
