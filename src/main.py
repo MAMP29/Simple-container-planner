@@ -18,7 +18,7 @@ def main(page: ft.Page):
     page.window.height = 800
     page.bgcolor = "#fbf9f1"
 
-    page.on_close = lambda e: stop_database_container()
+    #page.on_close = lambda e: stop_database_container()
 
     panel_list_area = PanelListArea(None)  # Inicialmente sin main_view
     principal_content_area = PrincipalContentArea(panel_list_area)  # Pasar panel_list_area al principal_content_area

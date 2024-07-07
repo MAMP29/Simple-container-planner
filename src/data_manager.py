@@ -10,7 +10,7 @@ class Connection():
 
     def connect(self):
         print("Connecting to database...")
-        create_database_container()
+        #create_database_container()
         try:
             self.connection = redis.Redis(host='localhost', port=6379, decode_responses=True)
             print("Connected to database.")
