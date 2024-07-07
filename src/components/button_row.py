@@ -1,12 +1,9 @@
-import os
-import shlex
-import time
-import subprocess
 import flet as ft
 from data_manager import db
 from execution_results import execution_results_manager
 from components.panel_list_area import PanelListArea
 from utils.docker_utils import execute_command
+from utils.utils import format_time, CommandValidator
 from algorithms.fcfs import FCFS
 from algorithms.spn import SPN
 from algorithms.srt import SRT
@@ -61,6 +58,20 @@ class ButtonRow(ft.UserControl):
             options=[]
         )
 
+        self.artificial_delay =ft.Container(
+            content=ft.Switch(
+                value=False, 
+                active_color="#a2c8cc0",
+                inactive_thumb_color="#ced4da", 
+                inactive_track_color="#a2c8cc0", 
+                label="Retraso artificial", 
+                label_position=ft.LabelPosition.RIGHT, 
+                label_style=ft.TextStyle(color=ft.colors.BLACK),
+                tooltip="Activa un pequeño retraso entre la ejecución de cada comando\npuede ser de 0.05 a 0.15 segundos"
+            ), 
+            padding=ft.padding.all(5), border_radius=10, bgcolor="#aad7d9",
+        )
+
     def add_command(self, e):
         command = self.command_dropdown.value
         self.content_area.add_row(command if command else "")
@@ -109,7 +120,7 @@ class ButtonRow(ft.UserControl):
                 self.update()
                 return
 
-            invalid_commands = self.validate_commands(data['commands'])
+            invalid_commands = CommandValidator.validate_commands(data['commands'])
 
             if invalid_commands:
                 invalid_command_names = ", ".join(invalid_commands)
@@ -123,25 +134,25 @@ class ButtonRow(ft.UserControl):
             avg_response_time = 0
 
             if algoritmo == 'FCFS':
-                fcfs = FCFS(data['commands'])
+                fcfs = FCFS(data['commands'], self.artificial_delay.content.value)
                 results, avg_turnaround_time, avg_response_time = fcfs.run()
 
             elif algoritmo == 'SPN':
-                spn = SPN(data['commands'])
+                spn = SPN(data['commands'], self.artificial_delay.content.value)
                 results, avg_turnaround_time, avg_response_time = spn.run()
 
             elif algoritmo == 'SRT':
-                srt = SRT(data['commands'])
+                srt = SRT(data['commands'], self.artificial_delay.content.value)
                 results, avg_turnaround_time, avg_response_time = srt.run()
 
             elif algoritmo == 'HRRN':
-                hrrn = HRRN(data['commands'])
+                hrrn = HRRN(data['commands'], self.artificial_delay.content.value)
                 results, avg_turnaround_time, avg_response_time = hrrn.run()
 
 
             elif algoritmo == 'Round Robin 2q':
-                rr2q = RR2Q(data['commands'],2)
-                results, avg_turnaround_time, avg_response_time = rr2q.execute()
+                rr2q = RR2Q(data['commands'],2, self.artificial_delay.content.value)
+                results, avg_turnaround_time, avg_response_time = rr2q.run()
 
 
             #Create a dictionary of the execution data
@@ -151,9 +162,10 @@ class ButtonRow(ft.UserControl):
                 "color": data["color"],
                 "nombre": data["name"],
                 "algoritmo": algoritmo,
-                "total_time": time.strftime("%H:%M:%S", time.gmtime(sum([r['turnaround_time'] for r in results]))),
-                "avg_turnaround_time": time.strftime("%H:%M:%S", time.gmtime(avg_turnaround_time)),
-                "avg_response_time": time.strftime("%H:%M:%S", time.gmtime(avg_response_time)),
+                "retraso_artificial": self.artificial_delay.content.value,
+                "total_time": format_time(sum([r['actual_execution_time'] for r in results])),
+                "avg_turnaround_time": format_time(avg_turnaround_time),
+                "avg_response_time": format_time(avg_response_time),
                 "commands": results
             }
 
@@ -163,7 +175,7 @@ class ButtonRow(ft.UserControl):
             
             # Save execution_results in the database
             db.save_results(execution_results_manager.get_results())
-            
+
             # Update executed commands
             self.update_executed_commands(data['commands'])
             
@@ -186,31 +198,7 @@ class ButtonRow(ft.UserControl):
         self.command_dropdown.options = [ft.dropdown.Option(cmd) for cmd in self.executed_commands]
         self.command_dropdown.update()
 
-    @staticmethod
-    def is_command_in_safe_directory(command_path):
-        safe_directories = [
-            '/bin', '/usr/bin', '/usr/local/bin',
-            '/sbin', '/usr/sbin', '/usr/local/sbin',
-            os.path.expanduser('~/.local/bin')  # Directorio común para comandos del usuario
-        ]
-        return any(command_path.startswith(directory) for directory in safe_directories)
-
-    def validate_commands(self, commands):
-        invalid_commands = []
-        for command_data in commands:
-            if not command_data['verify']:
-                continue  # Saltar esta validación si 'verify' es falso
-            command = command_data['command']
-            command_name = shlex.split(command)[0]
-            try:
-                result = subprocess.run(['which', command_name], check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-                if not self.is_command_in_safe_directory(result.stdout.strip()):
-                    invalid_commands.append(command)
-            except subprocess.CalledProcessError:
-                invalid_commands.append(command)
-        return invalid_commands
-
-
+    
     def build(self):
         return ft.Column(
             [
@@ -220,6 +208,8 @@ class ButtonRow(ft.UserControl):
                         self.remove_button,
                         ft.Container(width=2),
                         self.command_dropdown,
+                        ft.Container(width=650),
+                        self.artificial_delay
                     ],
                     alignment=ft.MainAxisAlignment.START,
                 ),

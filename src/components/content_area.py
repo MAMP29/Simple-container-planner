@@ -42,7 +42,8 @@ class ContentArea(ft.UserControl):
                         inactive_track_color="#a2c8cc0", 
                         label="Verificar", 
                         label_position=ft.LabelPosition.RIGHT, 
-                        label_style=ft.TextStyle(color=ft.colors.BLACK)
+                        label_style=ft.TextStyle(color=ft.colors.BLACK),
+                        tooltip="No verificará si el comando existe en el sistema raíz"
                     ), 
                     padding=ft.padding.all(5), border_radius=10, bgcolor="#aad7d9",
                 )

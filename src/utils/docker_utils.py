@@ -23,7 +23,8 @@ def create_image():
 
     dockerfile = '''
     FROM alpine:latest
-    RUN apk add --no-cache bash
+    RUN apk update && apk add --no-cache stress-ng coreutils
+    CMD ["/bin/sh"]
     '''
         
     try:
@@ -42,7 +43,7 @@ def create_image():
             print(f"Error al crear la imagen {image_name}: {e}")
 
 # function to execute a command in the container
-async def execute_command_async(comando):
+async def execute_command_async(comando, max_log_size=1024*1024):
     async with aiodocker.Docker() as docker:
         config = {
             "Image": "planner-base:latest",
@@ -56,8 +57,18 @@ async def execute_command_async(comando):
         start_time = asyncio.get_event_loop().time()
         
         logs = []
+        log_size = 0
+        truncated = False
         async for log in container.log(stdout=True, stderr=True, follow=True):
-            logs.append(log)
+            log_size += len(log)
+            if log_size > max_log_size:
+                if not truncated:
+                    logs.append("\n... [Log truncado debido al tamaño] ...")
+                    truncated = True
+            else:
+                logs.append(log)
+
+
         result = "".join(logs)
         
         await container.wait()

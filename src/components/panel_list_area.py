@@ -65,6 +65,10 @@ class PanelListArea(ft.UserControl):
         #     print("Command data:")
         #     print(cmd)
         # print("------------------------------------------------")
+        retraso_str = "Si" if data['retraso_artificial'] == 'True' else 'No'
+
+        def truncate_command(command, max_length=20):
+                return command if len(command) <= max_length else command[:max_length] + '...'
 
         table = ft.DataTable(
             columns=[
@@ -78,7 +82,7 @@ class PanelListArea(ft.UserControl):
             rows=[
                 ft.DataRow(
                     cells=[
-                        ft.DataCell(ft.Text(cmd["command"])),
+                        ft.DataCell(ft.Text(truncate_command(cmd["command"]), tooltip=cmd["command"])),
                         ft.DataCell(ft.Text(cmd["start_time"])),
                         ft.DataCell(ft.Text(cmd["estimated_time"])),
                         ft.DataCell(ft.Text(f"{cmd['turnaround_time']:.2f}")),
@@ -103,6 +107,7 @@ class PanelListArea(ft.UserControl):
                     ft.Text(f"Tiempo total de ejecución: \n {data['total_time']}"),
                     ft.Text(f"Turnaround time promedio: \n {data['avg_turnaround_time']}"),
                     ft.Text(f"Response time promedio: \n {data['avg_response_time']}"),
+                    ft.Text(f"Retraso artificial: \n {retraso_str}")
                 ]),
             ]),
             ft.Row([

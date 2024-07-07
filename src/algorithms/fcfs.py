@@ -1,37 +1,42 @@
+import random
 import time
 from utils.docker_utils import execute_command
 
 # FCFS proccess implementation
 class FCFS:
-    def __init__(self, commands):
-        self.commands = commands
-        
-        # Ordenar los comandos por tiempo de inicio
-        self.commands.sort(key=lambda x: x['start_time'])
+    def __init__(self, commands, use_artificial_delay=False, min_delay=0.05, max_delay=0.15):
+        self.commands = sorted(commands, key=lambda x: x['start_time'])
+        self.use_artificial_delay = use_artificial_delay
+        self.min_delay = min_delay
+        self.max_delay = max_delay
 
     def run(self):
         results = []
         turnaround_times = []
         response_times = []
+
+        start_time = time.time()
         current_time = 0
 
         for command in self.commands:
-            # Avanzar el tiempo hasta el inicio programado del comando
-            if current_time < command['start_time']:
-                current_time = command['start_time']
+            while time.time() - start_time < command['start_time']:
+                time.sleep(0.01)
 
-            # Calcular el response time (momento de inicio real menos el tiempo de inicio esperado)
+            current_time = max(current_time, command['start_time'])
+
+            if self.use_artificial_delay:
+                artificial_delay = random.uniform(self.min_delay, self.max_delay)
+                time.sleep(artificial_delay)
+                current_time += artificial_delay
+
             response_time = current_time - command['start_time']
             response_times.append(response_time)
 
-            print(f"Ejecutando comando: {command['command']}")
-            # Ejecutar el comando y obtener el resultado y tiempo de ejecución
+            print(f"Ejecutando comando: {command['command']} a tiempo {current_time}")
             result, execution_time = execute_command(command['command'])
 
-            # Actualizar el tiempo actual
             current_time += execution_time
 
-            # Calcular el turnaround time (momento de finalización real menos el tiempo de inicio esperado)
             turnaround_time = current_time - command['start_time']
             turnaround_times.append(turnaround_time)
 
@@ -45,16 +50,12 @@ class FCFS:
                 'response_time': response_time
             })
 
-        # Calcular promedios
-        avg_turnaround_time = sum(turnaround_times) / len(turnaround_times)
-        avg_response_time = sum(response_times) / len(response_times)
+        avg_turnaround_time = sum(turnaround_times) / len(turnaround_times) if turnaround_times else 0
+        avg_response_time = sum(response_times) / len(response_times) if turnaround_times else 0
 
-        # Tiempo total de ejecución
-        total_execution_time = current_time
-
-        print("RESULTS OF FCFS")
-        print("Results: \n", results)
-        print("Turnaround times: \n", avg_turnaround_time)
-        print("Response times: \n", avg_response_time)
+        print("RESULTADOS DEL FCFS")
+        print("Resultados: \n", results)
+        print("Tiempo de turnaround promedio: ", avg_turnaround_time)
+        print("Tiempo de respuesta promedio: ", avg_response_time)
 
         return results, avg_turnaround_time, avg_response_time
