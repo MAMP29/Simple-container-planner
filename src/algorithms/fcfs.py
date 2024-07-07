@@ -32,7 +32,6 @@ class FCFS:
             response_time = current_time - command['start_time']
             response_times.append(response_time)
 
-            print(f"Ejecutando comando: {command['command']} a tiempo {current_time}")
             result, execution_time = execute_command(command['command'])
 
             current_time += execution_time
@@ -52,10 +51,5 @@ class FCFS:
 
         avg_turnaround_time = sum(turnaround_times) / len(turnaround_times) if turnaround_times else 0
         avg_response_time = sum(response_times) / len(response_times) if turnaround_times else 0
-
-        print("RESULTADOS DEL FCFS")
-        print("Resultados: \n", results)
-        print("Tiempo de turnaround promedio: ", avg_turnaround_time)
-        print("Tiempo de respuesta promedio: ", avg_response_time)
 
         return results, avg_turnaround_time, avg_response_time

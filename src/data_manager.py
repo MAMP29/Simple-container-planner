@@ -16,14 +16,12 @@ class Connection():
             print("Failed to connect to database.")
         
 
-    # Save execution_results in the database
     def save_results(self, results):
         print("Saving results...")
-        self.connection.delete("execution_results")  # Clear existing data
+        self.connection.delete("execution_results") 
         for i, result in enumerate(results):
             serialized_result = json.dumps(result)
             self.connection.lpush("execution_results", serialized_result)
-            print(f"Saved result {i}: {serialized_result}")
         print("Results saved successfully!")
         
 
@@ -34,20 +32,16 @@ class Connection():
         for result in results:
             deserialized_result = json.loads(result)
             execution_results_manager.add_result(deserialized_result)
-            print(f"Loaded result: {deserialized_result}")
         print("Results loaded successfully!")
         return execution_results_manager.get_results()
 
 
-
-    # Delete all execution_results from the database
     def clear_results(self):
         print("Deleting results...")
         self.connection.delete("execution_results")
         execution_results_manager.clear()
         print("Results deleted successfully!")
 
-    # Print results
     def print_results(self):
         print("Printing results...")
         for i, result in enumerate(execution_results_manager.get_results()):

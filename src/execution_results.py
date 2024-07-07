@@ -1,4 +1,5 @@
 
+#Clase para manejar los respectivos datos de las ejecuciones
 class ExecutionResultsManager:
     def __init__(self):
         self.results = []

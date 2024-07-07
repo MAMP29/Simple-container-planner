@@ -8,7 +8,6 @@ from execution_results import execution_results_manager
 class PanelListArea(ft.UserControl):
     def __init__(self, main_view):
         super().__init__()
-        #self.execution_results = execution_results
         self.main_view = main_view # Referencia al componente principal
         self.panels = [self.create_header_panel()]
         self.expansion_list = ft.ExpansionPanelList(
@@ -56,15 +55,7 @@ class PanelListArea(ft.UserControl):
 
 
     def create_panel(self, data):
-
-        # print("------------------------------------------------")
-        # print("Creating panel with data:")
-        # print(data)
-    
-        # for cmd in data["commands"]:
-        #     print("Command data:")
-        #     print(cmd)
-        # print("------------------------------------------------")
+        
         retraso_str = "Si" if data['retraso_artificial'] == 'True' else 'No'
 
         def truncate_command(command, max_length=20):
@@ -72,7 +63,7 @@ class PanelListArea(ft.UserControl):
 
         table = ft.DataTable(
             columns=[
-                ft.DataColumn(ft.Text("Comando")),
+                ft.DataColumn(ft.Text("Proceso")),
                 ft.DataColumn(ft.Text("Tiempo Inicio")),
                 ft.DataColumn(ft.Text("Tiempo Estimado")),
                 ft.DataColumn(ft.Text("Turnaround Time")),
@@ -145,7 +136,7 @@ class PanelListArea(ft.UserControl):
             data=data["timestamp_id"]
         )
 
-    #create a header panel that always gonna appear in the top panel 
+    # Crear un panel principal que aparece siempre en la parte superior
     def create_header_panel(self):
         return ft.ExpansionPanel(
             bgcolor=ft.colors.BLUE_400,

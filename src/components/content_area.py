@@ -30,9 +30,9 @@ class ContentArea(ft.UserControl):
     def create_row(self, command=""):
         return ft.Row(
             [
-                ft.TextField(label='Command', width=350, bgcolor="#ffffff", value=command, on_blur=self.validate_command),
-                ft.TextField(label='Start time', width=150, hint_text="must be an integer", bgcolor="#ffffff", on_blur=self.validate_time),
-                ft.TextField(label='Estimated time', width=150, hint_text="must be an integer", bgcolor="#ffffff", on_blur=self.validate_time),
+                ft.TextField(label='Proceso', width=350, bgcolor="#ffffff", value=command, on_blur=self.validate_command),
+                ft.TextField(label='Tiempo de inicio', width=150, hint_text="Segundos", bgcolor="#ffffff", on_blur=self.validate_time),
+                ft.TextField(label='Tiempo estimado', width=150, hint_text="Segundos", bgcolor="#ffffff", on_blur=self.validate_time),
                 ft.Container(width=10),
                 ft.Container(
                     content=ft.Switch(
@@ -52,7 +52,7 @@ class ContentArea(ft.UserControl):
         )
     
 
-    def validate_command(self, e, text="El comando es obligatorio"):
+    def validate_command(self, e, text="El proceso es obligatorio"):
         text_field = e.control
         if not text_field.value:
             text_field.error_text = text
@@ -154,7 +154,7 @@ class ContentArea(ft.UserControl):
         self.page.dialog.open = True
         self.page.update() 
 
-    #delete text of the textfields in self.rows
+    # Eliminar texto de los campos
     def clear(self):
         self.name_field.value = ''
         for row in self.rows:
@@ -198,7 +198,6 @@ class ContentArea(ft.UserControl):
                     ft.Container(height=10),
                     self.rows_column,
                 ],            
-                #tight=True,
                 expand=True,
             ),
             expand=True,

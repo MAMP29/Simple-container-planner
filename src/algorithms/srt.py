@@ -50,7 +50,6 @@ class SRT:
             # Ejecutar el comando actual
             if current_command:
                 if 'result' not in current_command:
-                    print(f"Ejecutando: {current_command['command']} a tiempo {current_time}")
                     result, execution_time = execute_command(current_command['command'])
                     current_command['result'] = result
                     current_command['actual_execution_time'] = execution_time
@@ -77,11 +76,6 @@ class SRT:
 
         avg_turnaround_time = sum(turnaround_times) / len(turnaround_times) if turnaround_times else 0
         avg_response_time = sum(response_times) / len(response_times) if response_times else 0
-
-        print("RESULTADOS DEL SRT")
-        print("Resultados: \n", results)
-        print("Tiempo de turnaround promedio: ", avg_turnaround_time)
-        print("Tiempo de respuesta promedio: ", avg_response_time)
 
         return results, avg_turnaround_time, avg_response_time
     

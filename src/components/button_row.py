@@ -2,7 +2,6 @@ import flet as ft
 from data_manager import db
 from execution_results import execution_results_manager
 from components.panel_list_area import PanelListArea
-from utils.docker_utils import execute_command
 from utils.utils import format_time, CommandValidator
 from algorithms.fcfs import FCFS
 from algorithms.spn import SPN
@@ -35,7 +34,7 @@ class ButtonRow(ft.UserControl):
             icon=ft.icons.ADD,
             icon_color="black",
             icon_size=20,
-            tooltip="Nuevo comando",
+            tooltip="Nuevo proceso",
             bgcolor="#a2c8cc",
             on_click=self.add_command,
         )
@@ -44,16 +43,16 @@ class ButtonRow(ft.UserControl):
             icon=ft.icons.REMOVE,
             icon_color="black",
             icon_size=20,
-            tooltip="Debe de haber al menos un comando",
+            tooltip="Debe de haber al menos un proceso",
             bgcolor="#ced4da",
             on_click=self.remove_command,
             disabled=True,
         )
 
         self.command_dropdown = ft.Dropdown(
-            label="Comandos guardados",
+            label="Proceso guardados",
             width=200,
-            hint_text="Selecciona el comando",
+            hint_text="Selecciona el proceso",
             bgcolor="#ffffff",
             options=[]
         )
@@ -67,7 +66,7 @@ class ButtonRow(ft.UserControl):
                 label="Retraso artificial", 
                 label_position=ft.LabelPosition.RIGHT, 
                 label_style=ft.TextStyle(color=ft.colors.BLACK),
-                tooltip="Activa un pequeño retraso entre la ejecución de cada comando\npuede ser de 0.05 a 0.15 segundos"
+                tooltip="Activa un pequeño retraso entre la ejecución de cada proceso\npuede ser de 0.05 a 0.15 segundos"
             ), 
             padding=ft.padding.all(5), border_radius=10, bgcolor="#aad7d9",
         )
@@ -95,14 +94,11 @@ class ButtonRow(ft.UserControl):
             self.remove_button.bgcolor = "#ff8787"
             self.remove_button.tooltip = "Quitar comando"
 
-    # Execute the commands of the user 
+    # Ejecutar comandos del usuario
     def execute_comands(self, e):
 
-        print("THE GLOBAL LIST")
-        print(execution_results_manager.get_results())
-        print("----------------------...............................................")
-
         self.execute_button.disabled = True
+        self.update()
 
         try: 
             data = self.content_area.get_data()
@@ -155,7 +151,7 @@ class ButtonRow(ft.UserControl):
                 results, avg_turnaround_time, avg_response_time = rr2q.run()
 
 
-            #Create a dictionary of the execution data
+            # Crear un diccionario con los datos de la ejecución
             execution_data = {
                 "timestamp_id": data["timestamp_id"],
                 "hour_and_date": data["hour_and_date"],
@@ -173,23 +169,23 @@ class ButtonRow(ft.UserControl):
             self.panel_list_area.add_panel(execution_data)
             self.panel_list_area.update_panels()
             
-            # Save execution_results in the database
+            # Guardar los resultados en la base de datos
             db.save_results(execution_results_manager.get_results())
 
-            # Update executed commands
+            # Actualizar los comandos ejecutados
             self.update_executed_commands(data['commands'])
             
-            # update the panel list area
+            # Actualizar panel_list_area
             self.content_area.clear()
             self.content_area.show_succed_message("La ejecución ha terminado")
+
 
         except Exception as ex:
             self.content_area.show_error_message(f"Ocurrió un error durante la ejecución: {str(ex)}")
 
         finally:
             self.execute_button.disabled = False
-
-
+            self.update()
 
 
     def update_executed_commands(self, commands):

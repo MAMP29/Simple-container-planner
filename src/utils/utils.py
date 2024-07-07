@@ -5,13 +5,15 @@ import time
 
 # Aqui se pueden encontrar distintas funciones que sirven como soporte para el funcionamiento de la app
 
-
+# Formatea el tiempo a un formato de horas, minutos y segundos, en caso de que los segundos dados sean menores a cero
+# simplemente se redondean a dos decimales
 def format_time(seconds):
     if seconds < 1:
         return f"{seconds:.2f} segundos"
     else:
         return time.strftime("%H:%M:%S", time.gmtime(seconds))
     
+# Clase para validar los comandos
 class CommandValidator:
     @staticmethod
     def is_command_in_safe_directory(command_path):
