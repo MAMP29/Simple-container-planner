@@ -6,8 +6,6 @@ Para ejecutar SCP es aconsejable crear un entorno virtual en Python, con el fin 
 ### Usuarios de Linux
 Es necesario instalar varias librerías adicionales para hacer funcionar Flet. Consulte la [documentación oficial de Flet](https://flet.dev/docs/publish/linux/#prerequisites) para más detalles.
 
-**Es obligatorio tener Docker instalado en su dispositivo, la aplicación funciona mediante contenedores de Alpine en imagenes de docker, al igual que la base de datos.**
-
 ## Pasos de instalación
 1. Crear y activar el entorno virtual de Python 
     ```
